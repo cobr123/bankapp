@@ -1,0 +1,33 @@
+logging:
+  level:
+    root: DEBUG
+
+management:
+  endpoints.web.exposure.include: health
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    consul:
+      config:
+        enabled: true            # Включаем Consul Config для внешней конфигурации
+        prefix: config           # Префикс в KV-хранилище Consul (по умолчанию "config")
+        defaultContext: application  # Контекст по умолчанию
+    gateway.server.webflux:
+      routes:
+        - id: accounts  # ID роута
+          uri: lb://accounts  # URI микросервиса, на который следует перенаправлять запрос
+          order: 10
+          predicates:
+            - Path=/accounts/** # URI поступающего в Gateway запроса, с которым мэтчится роут
+          filters:
+            - TokenRelay
+            - RewritePath=/accounts/?(?<segment>.*), /$\{segment} # Фильтр, модифицирующий запрос к целевому сервису (убирается имя сервиса в начале)
+        - id: default_path_to_ui
+          uri: lb://ui
+          order: 10000
+          predicates:
+            - Path=/**
+          filters:
+            - TokenRelay

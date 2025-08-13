@@ -1,7 +1,58 @@
 version: "3"
 services:
+  consul_server:
+    image: hashicorp/consul:1.21
+    volumes:
+      - /consul/data
+    ports:
+      - "8500:8500" # HTTP API and UI
+      - "8600:8600/tcp" # DNS TCP
+      - "8600:8600/udp" # DNS UDP
+    command: "agent -server -bootstrap-expect=1 -client=0.0.0.0 -dev"
+
+  gateway:
+    build:
+      target: gateway
+    depends_on:
+      - consul_server
+    ports:
+      - '8080:8080'
+    environment:
+      - spring.cloud.consul.host=consul_server
+      - spring.cloud.consul.port=8500
+      - spring.cloud.consul.config.import-check.enabled=false
+
   ui:
     build:
       target: ui
+    depends_on:
+      - consul_server
+    environment:
+      - spring.cloud.consul.host=consul_server
+      - spring.cloud.consul.port=8500
+      - spring.cloud.consul.config.import-check.enabled=false
+
+  accounts:
+    build:
+      target: accounts
+    environment:
+      - spring.cloud.consul.host=consul_server
+      - spring.cloud.consul.port=8500
+      - spring.cloud.consul.config.import-check.enabled=false
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://accounts_db:5432/accounts
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - consul_server
+      - accounts_db
+
+  accounts_db:
+    image: postgres:17-alpine
     ports:
-      - '8080:8080'
+      - '5432:5432'
+    volumes:
+      - /var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=accounts
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
