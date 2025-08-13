@@ -1,0 +1,7 @@
+version: "3"
+services:
+  ui:
+    build:
+      target: ui
+    ports:
+      - '8080:8080'
