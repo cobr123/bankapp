@@ -1,11 +1,13 @@
 package com.example.bankapp.ui.controller;
 
+import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.configuration.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @WebFluxTest(RootController.class)
@@ -15,6 +17,9 @@ public class RootControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @MockitoBean
+    private UserClient userClient;
 
     @Test
     public void testRoot() {

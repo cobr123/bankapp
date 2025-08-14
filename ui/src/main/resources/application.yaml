@@ -5,6 +5,9 @@ logging:
 management:
   endpoints.web.exposure.include: health
 
+user-client:
+  base-url: ${USER_CLIENT_BASE_URL}
+
 spring:
   application:
     name: ui

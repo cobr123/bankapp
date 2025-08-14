@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,7 +19,6 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @CachePut(value = "users", key = "#dto.getLogin()")
     public User createUser(RegisterUserRequestDto dto) {
@@ -37,10 +35,9 @@ public class UserService {
             throw new IllegalArgumentException("Пользователь с таким именем уже существует");
         }
         try {
-            var userDetails = org.springframework.security.core.userdetails.User.withUsername(dto.getLogin()).password(dto.getPassword()).passwordEncoder(passwordEncoder::encode).build();
             var user = com.example.bankapp.accounts.model.User.builder()
                     .login(dto.getLogin())
-                    .password(userDetails.getPassword())
+                    .password(dto.getPassword())
                     .name(dto.getName())
                     .dateOfBirth(dto.getBirthdate())
                     .balance(BigDecimal.ZERO)

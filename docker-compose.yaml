@@ -31,6 +31,7 @@ services:
       - spring.cloud.consul.host=consul_server
       - spring.cloud.consul.port=8500
       - spring.cloud.consul.config.import-check.enabled=false
+      - USER_CLIENT_BASE_URL=accounts
 
   accounts:
     build:
