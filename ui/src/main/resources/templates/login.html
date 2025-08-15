@@ -13,7 +13,7 @@
 </a>
 <h1>Страница логина</h1>
 <p th:if="${loginError}" class="error">Не правильный логин или пароль</p>
-<form action="/login" method="post">
+<form th:action="${'/login'}" method="post">
     <label for="username">Имя пользователя</label>:
     <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
     <label for="password">Пароль</label>:

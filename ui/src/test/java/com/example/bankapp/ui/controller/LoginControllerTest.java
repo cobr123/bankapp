@@ -13,10 +13,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@WebFluxTest(RootController.class)
+@WebFluxTest(LoginController.class)
 @Import(SecurityConfig.class)
 @ActiveProfiles("test")
-public class RootControllerTest {
+public class LoginControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
@@ -32,10 +32,22 @@ public class RootControllerTest {
     private ReactiveOAuth2AuthorizedClientService authorizedClientService;
 
     @Test
-    public void testRoot() {
-        webTestClient.get().uri("/").exchange()
-                .expectStatus().is3xxRedirection()
-                .expectHeader().valueEquals("Location", "/main");
+    public void testGetForm() {
+        webTestClient
+                .get().uri("/login").exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .xpath("//p").doesNotExist();
+    }
+
+    @Test
+    public void testGetFormWithError() {
+        webTestClient
+                .get().uri("/login?error").exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType("text/html")
+                .expectBody()
+                .xpath("//p").isEqualTo("Не правильный логин или пароль");
     }
 
 }

@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
-import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
 import java.net.URI;
 
@@ -40,8 +39,6 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessHandler(logoutSuccessHandler)
                 )
-//                .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .build();
     }
 

@@ -1,5 +1,16 @@
 version: "3"
 services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3.2
+    ports:
+      - '8082:8080'
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+    command: start-dev --import-realm --verbose
+
   consul_server:
     image: hashicorp/consul:1.21
     volumes:
@@ -27,7 +38,10 @@ services:
       target: ui
     depends_on:
       - consul_server
+    ports:
+      - '8081:8080'
     environment:
+      - spring.security.oauth2.client.provider.keycloak.issuer-uri=http://keycloak:8080/realms/master
       - spring.cloud.consul.host=consul_server
       - spring.cloud.consul.port=8500
       - spring.cloud.consul.config.import-check.enabled=false
@@ -42,6 +56,7 @@ services:
     build:
       target: accounts
     environment:
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloak:8080/realms/master
       - spring.cloud.consul.host=consul_server
       - spring.cloud.consul.port=8500
       - spring.cloud.consul.config.import-check.enabled=false
@@ -55,6 +70,7 @@ services:
       - consul_server
       - accounts_cache
       - accounts_db
+      - keycloak
 
   accounts_db:
     image: postgres:17-alpine
