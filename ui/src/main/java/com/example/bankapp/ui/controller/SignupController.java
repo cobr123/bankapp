@@ -4,7 +4,6 @@ import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.model.RegisterUserRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -16,12 +15,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,15 +38,11 @@ public class SignupController {
         return Mono.just("signup");
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping
     public Mono<String> postForm(
             Model model,
             ServerWebExchange exchange,
-            @RequestParam("login") String login,
-            @RequestParam("password") String password,
-            @RequestParam("confirm_password") String confirmPassword,
-            @RequestParam("name") String name,
-            @RequestParam("birthdate") LocalDate birthdate
+            RegisterUserRequestDto form
     ) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(Optional::of)
@@ -58,20 +51,20 @@ public class SignupController {
                     if (securityContext.isPresent() && securityContext.get().getAuthentication().isAuthenticated()) {
                         throw new IllegalArgumentException("Вы уже зарегистрированы");
                     }
-                    if (!password.equals(confirmPassword)) {
-                        log.warn("Пароли не совпадают, {}", login);
+                    if (!form.getPassword().equals(form.getConfirmPassword())) {
+                        log.warn("Пароли не совпадают, {}", form.getLogin());
                         throw new IllegalArgumentException("Пароли не совпадают");
                     }
-                    return login;
+                    return form.getLogin();
                 })
                 .flatMap(v -> {
-                    UserDetails newUser = User.withUsername(login).password(password).passwordEncoder(passwordEncoder::encode).build();
+                    UserDetails newUser = User.withUsername(form.getLogin()).password(form.getPassword()).passwordEncoder(passwordEncoder::encode).build();
                     var dto = RegisterUserRequestDto.builder()
-                            .login(login)
+                            .login(form.getLogin())
                             .password(newUser.getPassword())
                             .confirmPassword(newUser.getPassword())
-                            .name(name)
-                            .birthdate(birthdate)
+                            .name(form.getName())
+                            .birthdate(form.getBirthdate())
                             .build();
                     return userClient.create(dto);
                 })
@@ -93,7 +86,11 @@ public class SignupController {
                     } else {
                         model.addAttribute("errors", List.of("Ошибка регистрации, попробуйте позже"));
                     }
+                    model.addAttribute("login", form.getLogin());
+                    model.addAttribute("name", form.getName());
+                    model.addAttribute("birthdate", form.getBirthdate());
                     return Mono.just("signup");
-                });
+                })
+                .defaultIfEmpty("signup");
     }
 }
