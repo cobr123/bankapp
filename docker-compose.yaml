@@ -31,7 +31,12 @@ services:
       - spring.cloud.consul.host=consul_server
       - spring.cloud.consul.port=8500
       - spring.cloud.consul.config.import-check.enabled=false
-      - USER_CLIENT_BASE_URL=accounts
+      - USER_CLIENT_BASE_URL=http://gateway/accounts/
+
+  accounts_cache:
+    image: redis:8-alpine
+    ports:
+      - '6379:6379'
 
   accounts:
     build:
@@ -43,8 +48,12 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://accounts_db:5432/accounts
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
+      - spring.data.redis.host=accounts_cache
+      - spring.data.redis.port=6379
+      - spring.cache.redis.time-to-live=PT5S
     depends_on:
       - consul_server
+      - accounts_cache
       - accounts_db
 
   accounts_db:
