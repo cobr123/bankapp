@@ -5,6 +5,12 @@ logging:
 management:
   endpoints.web.exposure.include: health
 
+server:
+  reactive:
+    session:
+      cookie:
+        name: SESSION_${spring.application.name}
+
 spring:
   application:
     name: gateway
