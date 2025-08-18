@@ -7,12 +7,11 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-@AllArgsConstructor
 @Builder
-public class UserResponseDto {
+@AllArgsConstructor
+public class EditUserRequestDto {
     private String login;
-    private String password;
     private String name;
     private String email;
-    private LocalDate dateOfBirth;
-} 
+    private LocalDate birthdate;
+}

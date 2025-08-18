@@ -1,9 +1,6 @@
 package com.example.bankapp.accounts.controller;
 
-import com.example.bankapp.accounts.model.EditPasswordRequestDto;
-import com.example.bankapp.accounts.model.RegisterUserRequestDto;
-import com.example.bankapp.accounts.model.UserMapper;
-import com.example.bankapp.accounts.model.UserResponseDto;
+import com.example.bankapp.accounts.model.*;
 import com.example.bankapp.accounts.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +16,21 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper mapper;
+
+    @PostMapping("/{login}/editUserAccounts")
+    public ResponseEntity<UserResponseDto> editUserAccounts(@PathVariable("login") String login, @RequestBody EditUserRequestDto dto) {
+        userService.validateBirthdate(dto.getBirthdate(), login);
+        return userService.findByLogin(login)
+                .map(user -> {
+                    user.setName(dto.getName());
+                    user.setEmail(dto.getEmail());
+                    user.setDateOfBirth(dto.getBirthdate());
+                    return userService.update(user);
+                })
+                .map(mapper::toDto)
+                .map(u -> ResponseEntity.status(HttpStatus.OK).body(u))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 
     @PostMapping("/{login}/editPassword")
     public ResponseEntity<UserResponseDto> editPassword(@PathVariable("login") String login, @RequestBody EditPasswordRequestDto dto) {

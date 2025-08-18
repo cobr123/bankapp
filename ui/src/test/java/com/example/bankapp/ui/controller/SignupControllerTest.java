@@ -4,11 +4,15 @@ import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.configuration.SecurityConfig;
 import com.example.bankapp.ui.model.UserResponseDto;
 import com.example.bankapp.ui.service.OAuth2Service;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
@@ -40,6 +44,17 @@ public class SignupControllerTest {
     @MockitoBean
     private ReactiveOAuth2AuthorizedClientService authorizedClientService;
 
+    @BeforeEach
+    void setUp() {
+        Mockito.reset(userClient);
+        Mockito.reset(oAuth2Service);
+    }
+
+    @AfterEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
     @Test
     public void testGetForm() {
         webTestClient
@@ -48,7 +63,7 @@ public class SignupControllerTest {
     }
 
     @Test
-    public void testGetPost() {
+    public void testPost() {
         doReturn(Mono.just(UserResponseDto.builder().build())).when(userClient).create(any());
 
         webTestClient
@@ -64,11 +79,12 @@ public class SignupControllerTest {
                 )
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .exchange()
-                .expectStatus().isOk();
+                .expectStatus().is3xxRedirection()
+                .expectHeader().valueEquals("Location", "/main");
     }
 
     @Test
-    public void testGetPostFailSamePassword() {
+    public void testPostFailSamePassword() {
         webTestClient
                 .mutateWith(csrf())
                 .post()

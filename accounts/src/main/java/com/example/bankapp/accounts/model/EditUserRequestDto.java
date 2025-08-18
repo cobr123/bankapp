@@ -1,4 +1,4 @@
-package com.example.bankapp.ui.model;
+package com.example.bankapp.accounts.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,8 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @Builder
-public class UserResponseDto {
-    private String login;
-    private String password;
+public class EditUserRequestDto {
     private String name;
     private String email;
-    private LocalDate dateOfBirth;
-} 
+    private LocalDate birthdate;
+}

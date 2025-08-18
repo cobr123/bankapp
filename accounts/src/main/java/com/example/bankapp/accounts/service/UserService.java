@@ -20,16 +20,20 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    public void validateBirthdate(LocalDate birthdate, String login) {
+        if (!birthdate.isBefore(LocalDate.now().minusYears(18))) {
+            log.warn("Вам должно быть больше 18 лет, {}", login);
+            throw new IllegalArgumentException("Вам должно быть больше 18 лет");
+        }
+    }
+
     @CachePut(value = "users", key = "#dto.getLogin()")
     public User createUser(RegisterUserRequestDto dto) {
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {
             log.warn("Пароли не совпадают, {}", dto.getLogin());
             throw new IllegalArgumentException("Пароли не совпадают");
         }
-        if (!dto.getBirthdate().isBefore(LocalDate.now().minusYears(18))) {
-            log.warn("Вам должно быть больше 18 лет, {}", dto.getLogin());
-            throw new IllegalArgumentException("Вам должно быть больше 18 лет");
-        }
+        validateBirthdate(dto.getBirthdate(), dto.getLogin());
         if (userRepository.findByLogin(dto.getLogin()).isPresent()) {
             log.warn("Пользователь с таким именем уже существует, {}", dto.getLogin());
             throw new IllegalArgumentException("Пользователь с таким именем уже существует");

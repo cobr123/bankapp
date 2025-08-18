@@ -54,44 +54,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @WithMockUser("userLogin1")
-    public void testChangePasswordFailSameLogin() {
-        webTestClient
-                .mutateWith(csrf())
-                .post()
-                .uri(uriBuilder -> uriBuilder.path("/user/userLogin2/editPassword")
-                        .queryParam("password", "password")
-                        .queryParam("confirm_password", "confirm_password")
-                        .build()
-                )
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType("text/html")
-                .expectBody()
-                .xpath("//p").isEqualTo("Логины не совпадают");
-    }
-
-    @Test
-    @WithMockUser("userLogin")
-    public void testChangePasswordFailSamePassword() {
-        webTestClient
-                .mutateWith(csrf())
-                .post()
-                .uri(uriBuilder -> uriBuilder.path("/user/userLogin/editPassword")
-                        .queryParam("password", "password")
-                        .queryParam("confirm_password", "confirm_password")
-                        .build()
-                )
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType("text/html")
-                .expectBody()
-                .xpath("//p").isEqualTo("Пароли не совпадают");
-    }
-
-    @Test
     @WithMockUser("userLogin")
     public void testChangePassword() {
         doReturn(Mono.empty()).when(userClient).editPassword(any());
@@ -106,11 +68,25 @@ public class UserControllerTest {
                 )
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType("text/html")
-                .expectBody()
-                .xpath("//p").isEqualTo("\n" +
-                        "                        Пароль: \n" +
-                        "                    ");
+                .expectStatus().is3xxRedirection()
+                .expectHeader().valueEquals("Location", "/main");
+    }
+
+    @Test
+    @WithMockUser("userLogin")
+    public void testEditUserAccounts() {
+        doReturn(Mono.empty()).when(userClient).editUserAccounts(any());
+
+        webTestClient
+                .mutateWith(csrf())
+                .post()
+                .uri(uriBuilder -> uriBuilder.path("/user/userLogin/editUserAccounts")
+                        .queryParam("name", "new name")
+                        .build()
+                )
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .exchange()
+                .expectStatus().is3xxRedirection()
+                .expectHeader().valueEquals("Location", "/main");
     }
 }

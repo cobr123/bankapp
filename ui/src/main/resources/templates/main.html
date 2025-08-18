@@ -66,16 +66,20 @@
             </tr>
             <tr>
                 <td style="font-weight:bold;">Фамилия Имя</td>
-                <td th:text="${name}"/>
                 <td>
-                    <input name="name" type="text" style="width:100%"/>
+                    <input name="name" type="text" style="width:100%" th:value="${name}"/>
                 </td>
             </tr>
             <tr>
                 <td style="font-weight:bold;">Дата рождения</td>
-                <td th:text="${birthdate}"/>
                 <td>
-                    <input name="birthdate" type="date" style="width:100%"/>
+                    <input name="birthdate" type="date" style="width:100%" th:value="${birthdate}"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold;">Email</td>
+                <td>
+                    <input name="email" type="email" style="width:100%" th:value="${email}"/>
                 </td>
             </tr>
             <tr th:each="account : ${accounts}">

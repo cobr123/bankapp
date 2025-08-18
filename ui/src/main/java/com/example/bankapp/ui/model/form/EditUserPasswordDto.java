@@ -1,10 +1,9 @@
-package com.example.bankapp.ui.model;
+package com.example.bankapp.ui.model.form;
 
 import lombok.Builder;
 import lombok.Getter;
 
 import java.beans.ConstructorProperties;
-import java.time.LocalDate;
 
 @Getter
 @Builder

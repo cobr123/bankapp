@@ -131,4 +131,22 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.login").value(user.getLogin()));
     }
 
+    @Test
+    @WithMockUser
+    public void testEditUserAccounts() throws Exception {
+        var user = User.builder().login("john").build();
+        when(userService.findByLogin(anyString())).thenReturn(Optional.of(user));
+        when(userService.update(any())).thenReturn(user);
+        when(mapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
+
+        String requestBody = "{\"name\": \"new name\", \"email\": \"new email\", \"birthdate\": \"" + LocalDate.now().minusYears(19) + "\"}";
+
+        mockMvc.perform(post("/john/editUserAccounts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.login").value(user.getLogin()));
+    }
+
 }

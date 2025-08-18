@@ -78,7 +78,7 @@ public class SignupController {
                                 session.getAttributes().put(DEFAULT_SPRING_SECURITY_CONTEXT_ATTR_NAME, securityContext);
                             })
                             .flatMap(WebSession::changeSessionId)
-                            .thenReturn("main");
+                            .thenReturn("redirect:/main");
                 })
                 .onErrorResume(err -> {
                     if (err.getClass() == IllegalArgumentException.class) {
