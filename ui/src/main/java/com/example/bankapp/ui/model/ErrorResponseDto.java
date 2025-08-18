@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class RegisterErrorResponseDto {
+public class ErrorResponseDto {
     private String detail;
 } 

@@ -113,4 +113,22 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.detail").value("test"));
     }
 
+    @Test
+    @WithMockUser
+    public void testEditPassword() throws Exception {
+        var user = User.builder().login("john").build();
+        when(userService.findByLogin(anyString())).thenReturn(Optional.of(user));
+        when(userService.update(any())).thenReturn(user);
+        when(mapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
+
+        String requestBody = "{\"password\": \"123\"}";
+
+        mockMvc.perform(post("/john/editPassword")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.login").value(user.getLogin()));
+    }
+
 }

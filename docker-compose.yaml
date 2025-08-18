@@ -40,6 +40,7 @@ services:
       - consul_server
     ports:
       - '8081:8080'
+    restart: unless-stopped
     environment:
       - spring.security.oauth2.client.provider.keycloak.issuer-uri=http://keycloak:8080/realms/master
       - spring.cloud.consul.host=consul_server
