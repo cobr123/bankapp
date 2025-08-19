@@ -3,11 +3,14 @@ package com.example.bankapp.accounts.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @Builder
 public class UserResponseDto {
@@ -17,4 +20,5 @@ public class UserResponseDto {
     private String email;
     private LocalDate dateOfBirth;
     private BigDecimal balance;
-} 
+    private List<AccountResponseDto> accounts;
+}

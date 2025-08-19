@@ -5,32 +5,29 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="init_users" author="roman">
+    <changeSet id="init_accounts" author="roman">
         <preConditions onFail="WARN">
-            <tableExists tableName="users"/>
+            <tableExists tableName="accounts"/>
         </preConditions>
-        <createTable tableName="users">
+        <createTable tableName="accounts">
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="login" type="varchar(255)">
-                <constraints nullable="false" unique="true"/>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_accounts_user_id" referencedTableName="users" referencedColumnNames="id" deleteCascade="false"/>
             </column>
-            <column name="password" type="varchar(255)">
+            <column name="currency" type="varchar(3)">
                 <constraints nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="email" type="varchar(255)">
-                <constraints nullable="true"/>
-            </column>
-            <column name="date_of_birth" type="date">
+            <column name="value" type="number">
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <sql indexName="idx_accounts_currency" tableName="orders">
+            CREATE UNIQUE INDEX uidx_accounts_currency ON accounts (currency, user_id);
+        </sql>
         <rollback>
-            <dropTable tableName="users"/>
+            <dropTable tableName="accounts"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

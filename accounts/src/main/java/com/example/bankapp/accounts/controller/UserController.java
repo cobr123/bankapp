@@ -1,6 +1,7 @@
 package com.example.bankapp.accounts.controller;
 
 import com.example.bankapp.accounts.model.*;
+import com.example.bankapp.accounts.service.AccountService;
 import com.example.bankapp.accounts.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper mapper;
+    private final AccountService accountService;
+
+    private final UserMapper userMapper;
+    private final AccountMapper accountMapper;
 
     @PostMapping("/{login}/editUserAccounts")
     public ResponseEntity<UserResponseDto> editUserAccounts(@PathVariable("login") String login, @RequestBody EditUserRequestDto dto) {
@@ -27,7 +31,7 @@ public class UserController {
                     user.setDateOfBirth(dto.getBirthdate());
                     return userService.update(user);
                 })
-                .map(mapper::toDto)
+                .map(user -> accountMapper.toDto(accountService.findByUserId(user.getId()), userMapper.toDto(user)))
                 .map(u -> ResponseEntity.status(HttpStatus.OK).body(u))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
@@ -43,7 +47,7 @@ public class UserController {
                     user.setPassword(dto.getPassword());
                     return userService.update(user);
                 })
-                .map(mapper::toDto)
+                .map(user -> accountMapper.toDto(accountService.findByUserId(user.getId()), userMapper.toDto(user)))
                 .map(u -> ResponseEntity.status(HttpStatus.OK).body(u))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
@@ -51,13 +55,14 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponseDto create(@RequestBody RegisterUserRequestDto dto) {
-        return mapper.toDto(userService.createUser(dto));
+        var user = userService.createUser(dto);
+        return accountMapper.toDto(accountService.findByUserId(user.getId()), userMapper.toDto(user));
     }
 
     @GetMapping("/{login}")
     public ResponseEntity<UserResponseDto> get(@PathVariable String login) {
         return userService.findByLogin(login)
-                .map(mapper::toDto)
+                .map(user -> accountMapper.toDto(accountService.findByUserId(user.getId()), userMapper.toDto(user)))
                 .map(u -> ResponseEntity.status(HttpStatus.OK).body(u))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }

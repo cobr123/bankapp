@@ -2,6 +2,8 @@ package com.example.bankapp.ui.controller;
 
 import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.configuration.SecurityConfig;
+import com.example.bankapp.ui.model.AccountResponseDto;
+import com.example.bankapp.ui.model.Currency;
 import com.example.bankapp.ui.model.UserResponseDto;
 import com.example.bankapp.ui.service.OAuth2Service;
 import org.junit.jupiter.api.AfterEach;
@@ -19,6 +21,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -62,7 +67,11 @@ public class MainControllerTest {
     @Test
     @WithMockUser
     public void testMainWithAuth() {
-        doReturn(Mono.just(UserResponseDto.builder().build())).when(userClient).findByLogin(any());
+        var accounts = List.of(
+                AccountResponseDto.builder().currency(Currency.RUB).value(BigDecimal.ZERO).build(),
+                AccountResponseDto.builder().currency(Currency.USD).build()
+        );
+        doReturn(Mono.just(UserResponseDto.builder().accounts(accounts).build())).when(userClient).findByLogin(any());
 
         webTestClient.get().uri("/main").exchange()
                 .expectStatus().isOk()

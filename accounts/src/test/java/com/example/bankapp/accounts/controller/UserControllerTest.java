@@ -5,6 +5,7 @@ import com.example.bankapp.accounts.configuration.SecurityConfig;
 import com.example.bankapp.accounts.model.User;
 import com.example.bankapp.accounts.model.UserMapper;
 import com.example.bankapp.accounts.model.UserResponseDto;
+import com.example.bankapp.accounts.service.AccountService;
 import com.example.bankapp.accounts.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,9 @@ public class UserControllerTest {
     @MockitoBean
     private UserService userService;
 
+    @MockitoBean
+    private AccountService accountService;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -46,11 +50,13 @@ public class UserControllerTest {
     private JwtDecoder jwtDecoder;
 
     @MockitoBean
-    private UserMapper mapper;
+    private UserMapper userMapper;
 
     @BeforeEach
     void setUp() {
         Mockito.reset(userService);
+        Mockito.reset(accountService);
+        Mockito.reset(userMapper);
     }
 
     @AfterEach
@@ -63,7 +69,7 @@ public class UserControllerTest {
     public void testGetAndFound() throws Exception {
         var user = User.builder().id(System.nanoTime()).build();
         when(userService.findByLogin(anyString())).thenReturn(Optional.of(user));
-        when(mapper.toDto(any())).thenReturn(UserResponseDto.builder().build());
+        when(userMapper.toDto(any())).thenReturn(UserResponseDto.builder().build());
 
         mockMvc.perform(get("/userLogin"))
                 .andExpect(status().isOk())
@@ -86,7 +92,7 @@ public class UserControllerTest {
 
         var user = User.builder().login("userLogin").build();
         when(userService.createUser(any())).thenReturn(user);
-        when(mapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
+        when(userMapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
 
         String requestBody = "{\"login\": \"john\", \"password\": \"123\", \"confirm_password\": \"123\", \"name\": \"Doe John\", \"birthdate\": \"" + LocalDate.now().minusYears(19) + "\"}";
 
@@ -119,7 +125,7 @@ public class UserControllerTest {
         var user = User.builder().login("john").build();
         when(userService.findByLogin(anyString())).thenReturn(Optional.of(user));
         when(userService.update(any())).thenReturn(user);
-        when(mapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
+        when(userMapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
 
         String requestBody = "{\"password\": \"123\"}";
 
@@ -137,7 +143,7 @@ public class UserControllerTest {
         var user = User.builder().login("john").build();
         when(userService.findByLogin(anyString())).thenReturn(Optional.of(user));
         when(userService.update(any())).thenReturn(user);
-        when(mapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
+        when(userMapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
 
         String requestBody = "{\"name\": \"new name\", \"email\": \"new email\", \"birthdate\": \"" + LocalDate.now().minusYears(19) + "\"}";
 

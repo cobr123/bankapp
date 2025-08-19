@@ -3,7 +3,6 @@ package com.example.bankapp.accounts.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -23,5 +22,4 @@ public class User {
     private String name;
     private String email;
     private LocalDate dateOfBirth;
-    private BigDecimal balance;
 }

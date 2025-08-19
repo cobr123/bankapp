@@ -1,6 +1,8 @@
 package com.example.bankapp.accounts.repository;
 
 import com.example.bankapp.accounts.AccountsApplicationTests;
+import com.example.bankapp.accounts.model.Account;
+import com.example.bankapp.accounts.model.Currency;
 import com.example.bankapp.accounts.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +28,9 @@ public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     @MockitoBean
     private JwtDecoder jwtDecoder;
 
@@ -37,10 +42,17 @@ public class UserRepositoryTest {
                 .password("password")
                 .dateOfBirth(LocalDate.now())
                 .name("name")
-                .balance(BigDecimal.ONE)
                 .build();
         var savedUser = userRepository.save(user);
         assertTrue("Созданной записи должен был быть присвоен ID", savedUser.getId() != null);
+
+        var account = Account.builder()
+                .userId(savedUser.getId())
+                .currency(Currency.RUB)
+                .value(BigDecimal.ONE)
+                .build();
+        var savedAccount = accountRepository.save(account);
+        assertTrue("Созданной записи должен был быть присвоен ID", savedAccount.getId() != null);
     }
 
 }

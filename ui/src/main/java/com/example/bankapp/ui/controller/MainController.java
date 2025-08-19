@@ -41,6 +41,8 @@ public class MainController {
                     model.addAttribute("name", userResponseDto.getName());
                     model.addAttribute("email", userResponseDto.getEmail());
                     model.addAttribute("birthdate", userResponseDto.getDateOfBirth());
+
+                    model.addAttribute("accounts", userResponseDto.getAccounts());
                     return Mono.just("main");
                 })
                 .onErrorResume(err -> {

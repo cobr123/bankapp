@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -15,4 +16,5 @@ public class UserResponseDto {
     private String name;
     private String email;
     private LocalDate dateOfBirth;
+    private List<AccountResponseDto> accounts;
 } 

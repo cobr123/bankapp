@@ -44,7 +44,6 @@ public class UserService {
                     .password(dto.getPassword())
                     .name(dto.getName())
                     .dateOfBirth(dto.getBirthdate())
-                    .balance(BigDecimal.ZERO)
                     .build();
             return userRepository.save(user);
         } catch (Exception e) {
