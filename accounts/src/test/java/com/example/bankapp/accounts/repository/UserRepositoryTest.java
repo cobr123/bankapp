@@ -53,6 +53,11 @@ public class UserRepositoryTest {
                 .build();
         var savedAccount = accountRepository.save(account);
         assertTrue("Созданной записи должен был быть присвоен ID", savedAccount.getId() != null);
+
+        var accountsByUserId = accountRepository.findByUserId(savedUser.getId());
+        assert (accountsByUserId.size() == 1);
+        var accountsByUserIdAndCurrency = accountRepository.findByUserIdAndCurrency(savedUser.getId(), Currency.RUB);
+        assert (accountsByUserIdAndCurrency.isPresent());
     }
 
 }

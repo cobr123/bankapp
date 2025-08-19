@@ -25,7 +25,7 @@ public class AccountService {
             evict = {@CacheEvict(value = "user_accounts", key = "#account.getUserId()")},
             put = {@CachePut(value = "accounts", key = "#account.getUserId() + '_' + #account.getCurrency().name()")}
     )
-    public Account insert(Account account) {
+    public Account save(Account account) {
         return accountRepository.save(account);
     }
 

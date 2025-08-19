@@ -6,6 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,6 +18,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
+    @Enumerated(EnumType.STRING)
     private Currency currency;
     private BigDecimal value;
 }

@@ -25,6 +25,38 @@ public class UserController {
     private final UserMapper userMapper;
     private final AccountMapper accountMapper;
 
+    @PostMapping("/{login}/cash")
+    public ResponseEntity<UserResponseDto> editUserCash(@PathVariable("login") String login, @RequestBody EditUserCashRequestDto dto) {
+        return userService.findByLogin(login)
+                .map(user -> {
+                    updateUserCash(user.getId(), dto);
+                    return user;
+                })
+                .map(user -> accountMapper.toDto(accountService.findByUserId(user.getId()), userMapper.toDto(user)))
+                .map(u -> ResponseEntity.status(HttpStatus.OK).body(u))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    private void updateUserCash(Long userId, EditUserCashRequestDto dto) {
+        if (dto.getValue().compareTo(BigDecimal.ZERO) <= 0) {
+            log.warn("Сумма должна быть больше нуля, {}", userId);
+            throw new IllegalArgumentException("Сумма должна быть больше нуля");
+        }
+        var account = accountService.findByUserIdAndCurrency(userId, dto.getCurrency())
+                .orElse(Account.builder().value(BigDecimal.ZERO).userId(userId).currency(dto.getCurrency()).build());
+        if (EditUserCashAction.PUT.equals(dto.getAction())) {
+            account.setValue(account.getValue().add(dto.getValue()));
+            accountService.save(account);
+        } else if (EditUserCashAction.GET.equals(dto.getAction())) {
+            if (account.getValue().compareTo(dto.getValue()) < 0) {
+                log.warn("Недостаточно средств для снятия, {}", userId);
+                throw new IllegalArgumentException("Недостаточно средств для снятия");
+            }
+            account.setValue(account.getValue().add(dto.getValue().negate()));
+            accountService.save(account);
+        }
+    }
+
     @PostMapping("/{login}/editUserAccounts")
     public ResponseEntity<UserResponseDto> editUserAccounts(@PathVariable("login") String login, @RequestBody EditUserRequestDto dto) {
         userService.validateBirthdate(dto.getBirthdate(), login);
@@ -58,7 +90,7 @@ public class UserController {
                     .currency(currency)
                     .value(BigDecimal.ZERO)
                     .build();
-            accountService.insert(account);
+            accountService.save(account);
         }
     }
 

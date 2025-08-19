@@ -1,6 +1,7 @@
 package com.example.bankapp.ui.controller;
 
 import com.example.bankapp.ui.client.UserClient;
+import com.example.bankapp.ui.model.AccountResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -36,6 +37,7 @@ public class MainController {
 
                     model.addAttribute("userAccountsErrors", session.getAttributes().remove("userAccountsErrors"));
                     model.addAttribute("passwordErrors", session.getAttributes().remove("passwordErrors"));
+                    model.addAttribute("cashErrors", session.getAttributes().remove("cashErrors"));
 
                     model.addAttribute("login", userResponseDto.getLogin());
                     model.addAttribute("name", userResponseDto.getName());
@@ -43,6 +45,7 @@ public class MainController {
                     model.addAttribute("birthdate", userResponseDto.getDateOfBirth());
 
                     model.addAttribute("accounts", userResponseDto.getAccounts());
+                    model.addAttribute("currency", userResponseDto.getAccounts().stream().map(AccountResponseDto::getCurrency).toList());
                     return Mono.just("main");
                 })
                 .onErrorResume(err -> {
