@@ -113,6 +113,7 @@ public class UserController {
                             .name(form.getName())
                             .birthdate(form.getBirthdate())
                             .email(form.getEmail())
+                            .accounts(form.getAccount())
                             .build();
                     return userClient.editUserAccounts(dto);
                 })

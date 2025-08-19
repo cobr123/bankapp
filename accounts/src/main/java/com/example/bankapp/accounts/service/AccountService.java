@@ -21,6 +21,14 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
 
+    @Caching(
+            evict = {@CacheEvict(value = "user_accounts", key = "#account.getUserId()")},
+            put = {@CachePut(value = "accounts", key = "#account.getUserId() + '_' + #account.getCurrency().name()")}
+    )
+    public Account insert(Account account) {
+        return accountRepository.save(account);
+    }
+
     @Cacheable(value = "user_accounts", key = "#userId")
     public List<Account> findByUserId(Long userId) {
         return accountRepository.findByUserId(userId);
@@ -37,6 +45,14 @@ public class AccountService {
     )
     public Account update(Account account) {
         return accountRepository.save(account);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "user_accounts", key = "#account.getUserId()"),
+            @CacheEvict(value = "accounts", key = "#account.getUserId() + '_' + #account.getCurrency().name()")
+    })
+    public void delete(Account account) {
+        accountRepository.delete(account);
     }
 
 }

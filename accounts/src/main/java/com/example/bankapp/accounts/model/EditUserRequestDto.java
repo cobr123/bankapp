@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @AllArgsConstructor
@@ -13,4 +14,5 @@ public class EditUserRequestDto {
     private String name;
     private String email;
     private LocalDate birthdate;
+    private Set<Currency> accounts;
 }

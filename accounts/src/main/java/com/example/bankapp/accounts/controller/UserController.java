@@ -9,6 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/")
@@ -26,6 +30,7 @@ public class UserController {
         userService.validateBirthdate(dto.getBirthdate(), login);
         return userService.findByLogin(login)
                 .map(user -> {
+                    updateUserCurrency(user.getId(), dto.getAccounts());
                     user.setName(dto.getName());
                     user.setEmail(dto.getEmail());
                     user.setDateOfBirth(dto.getBirthdate());
@@ -34,6 +39,27 @@ public class UserController {
                 .map(user -> accountMapper.toDto(accountService.findByUserId(user.getId()), userMapper.toDto(user)))
                 .map(u -> ResponseEntity.status(HttpStatus.OK).body(u))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    private void updateUserCurrency(Long userId, Set<Currency> currencies) {
+        if (currencies == null || currencies.isEmpty()) {
+            return;
+        }
+        var currenciesToCreate = new HashSet<>(currencies);
+        for (Account account : accountService.findByUserId(userId)) {
+            currenciesToCreate.remove(account.getCurrency());
+            if (!currencies.contains(account.getCurrency())) {
+                accountService.delete(account);
+            }
+        }
+        for (Currency currency : currenciesToCreate) {
+            var account = Account.builder()
+                    .userId(userId)
+                    .currency(currency)
+                    .value(BigDecimal.ZERO)
+                    .build();
+            accountService.insert(account);
+        }
     }
 
     @PostMapping("/{login}/editPassword")
