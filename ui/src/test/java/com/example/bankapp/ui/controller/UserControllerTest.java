@@ -1,5 +1,6 @@
 package com.example.bankapp.ui.controller;
 
+import com.example.bankapp.ui.client.TransferClient;
 import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.configuration.SecurityConfig;
 import com.example.bankapp.ui.service.OAuth2Service;
@@ -18,10 +19,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
 @WebFluxTest(UserController.class)
@@ -36,6 +34,9 @@ public class UserControllerTest {
     private UserClient userClient;
 
     @MockitoBean
+    private TransferClient transferClient;
+
+    @MockitoBean
     private OAuth2Service oAuth2Service;
     @MockitoBean
     private ReactiveClientRegistrationRepository clientRegistrationRepository;
@@ -45,6 +46,7 @@ public class UserControllerTest {
     @BeforeEach
     void setUp() {
         Mockito.reset(userClient);
+        Mockito.reset(transferClient);
         Mockito.reset(oAuth2Service);
     }
 
@@ -56,8 +58,6 @@ public class UserControllerTest {
     @Test
     @WithMockUser("userLogin")
     public void testChangePassword() {
-        doReturn(Mono.empty()).when(userClient).editPassword(any());
-
         webTestClient
                 .mutateWith(csrf())
                 .post()
@@ -75,13 +75,30 @@ public class UserControllerTest {
     @Test
     @WithMockUser("userLogin")
     public void testEditUserAccounts() {
-        doReturn(Mono.empty()).when(userClient).editUserAccounts(any());
-
         webTestClient
                 .mutateWith(csrf())
                 .post()
                 .uri(uriBuilder -> uriBuilder.path("/user/userLogin/editUserAccounts")
                         .queryParam("name", "new name")
+                        .build()
+                )
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .exchange()
+                .expectStatus().is3xxRedirection()
+                .expectHeader().valueEquals("Location", "/main");
+    }
+
+    @Test
+    @WithMockUser("userLogin1")
+    public void testTransfer() {
+        webTestClient
+                .mutateWith(csrf())
+                .post()
+                .uri(uriBuilder -> uriBuilder.path("/user/userLogin1/transfer")
+                        .queryParam("from_currency", "RUB")
+                        .queryParam("to_currency", "RUB")
+                        .queryParam("value", "1")
+                        .queryParam("to_login", "userLogin2")
                         .build()
                 )
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)

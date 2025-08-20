@@ -2,6 +2,7 @@ package com.example.bankapp.ui.controller;
 
 import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.model.AccountResponseDto;
+import com.example.bankapp.ui.model.UserLoginName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -30,22 +32,25 @@ public class MainController {
                 .map(securityContext -> {
                     return securityContext.map(sc -> sc.getAuthentication().getName()).orElseThrow(() -> new IllegalArgumentException("Login required"));
                 })
-                .flatMap(login -> exchange.getSession().zipWith(userClient.findByLogin(login)))
+                .flatMap(login -> Mono.zip(exchange.getSession(), userClient.findByLogin(login), userClient.getAll().collectList()))
                 .flatMap(pair -> {
                     var session = pair.getT1();
                     var userResponseDto = pair.getT2();
+                    List<UserLoginName> users = pair.getT3();
 
                     model.addAttribute("userAccountsErrors", session.getAttributes().remove("userAccountsErrors"));
                     model.addAttribute("passwordErrors", session.getAttributes().remove("passwordErrors"));
                     model.addAttribute("cashErrors", session.getAttributes().remove("cashErrors"));
+                    model.addAttribute("transferErrors", session.getAttributes().remove("transferErrors"));
 
                     model.addAttribute("login", userResponseDto.getLogin());
                     model.addAttribute("name", userResponseDto.getName());
                     model.addAttribute("email", userResponseDto.getEmail());
-                    model.addAttribute("birthdate", userResponseDto.getDateOfBirth());
+                    model.addAttribute("birthdate", userResponseDto.getBirthdate());
 
                     model.addAttribute("accounts", userResponseDto.getAccounts());
                     model.addAttribute("currency", userResponseDto.getAccounts().stream().map(AccountResponseDto::getCurrency).toList());
+                    model.addAttribute("users", users);
                     return Mono.just("main");
                 })
                 .onErrorResume(err -> {

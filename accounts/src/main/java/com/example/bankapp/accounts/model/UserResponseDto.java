@@ -18,7 +18,7 @@ public class UserResponseDto {
     private String password;
     private String name;
     private String email;
-    private LocalDate dateOfBirth;
+    private LocalDate birthdate;
     private BigDecimal balance;
     private List<AccountResponseDto> accounts;
 }

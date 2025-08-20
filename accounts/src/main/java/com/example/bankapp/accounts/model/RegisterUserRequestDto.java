@@ -12,7 +12,6 @@ import java.time.LocalDate;
 public class RegisterUserRequestDto {
     private String login;
     private String password;
-    private String confirmPassword;
     private String name;
     private LocalDate birthdate;
 }

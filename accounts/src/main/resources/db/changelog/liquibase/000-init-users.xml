@@ -25,7 +25,7 @@
             <column name="email" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="date_of_birth" type="date">
+            <column name="birthdate" type="date">
                 <constraints nullable="false"/>
             </column>
         </createTable>

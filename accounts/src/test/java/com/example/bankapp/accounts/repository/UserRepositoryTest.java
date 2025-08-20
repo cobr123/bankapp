@@ -40,11 +40,13 @@ public class UserRepositoryTest {
                 .login("login")
                 .email("email")
                 .password("password")
-                .dateOfBirth(LocalDate.now())
+                .birthdate(LocalDate.now())
                 .name("name")
                 .build();
         var savedUser = userRepository.save(user);
         assertTrue("Созданной записи должен был быть присвоен ID", savedUser.getId() != null);
+        var userLoginNames = userRepository.findAllLoginName();
+        assert (userLoginNames.size() == 1);
 
         var account = Account.builder()
                 .userId(savedUser.getId())

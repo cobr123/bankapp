@@ -49,7 +49,6 @@ public class UserServiceTest {
         var dto = RegisterUserRequestDto.builder()
                 .login("john")
                 .password("123")
-                .confirmPassword("123")
                 .name("Doe John")
                 .birthdate(LocalDate.now().minusYears(19))
                 .build();
@@ -61,32 +60,10 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testCreateUserErrorConfirmPass() {
-        var dto = RegisterUserRequestDto.builder()
-                .login("john")
-                .password("1")
-                .confirmPassword("2")
-                .name("Doe John")
-                .birthdate(LocalDate.now().minusYears(19))
-                .build();
-        var user = User.builder().build();
-        when(userRepository.save(any())).thenReturn(user);
-        when(userRepository.findByLogin(anyString())).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    userService.createUser(dto);
-                }
-        );
-    }
-
-    @Test
     public void testCreateUserErrorTooYoung() {
         var dto = RegisterUserRequestDto.builder()
                 .login("john")
                 .password("123")
-                .confirmPassword("123")
                 .name("Doe John")
                 .birthdate(LocalDate.now().minusYears(17))
                 .build();

@@ -1,0 +1,9 @@
+logging:
+  level:
+    root: DEBUG
+
+spring:
+  cloud:
+    consul:
+      config:
+        enabled: false

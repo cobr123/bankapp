@@ -12,4 +12,5 @@ import java.math.BigDecimal;
 public class AccountResponseDto {
     private Currency currency;
     private BigDecimal value;
+    private boolean exists;
 }

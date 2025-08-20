@@ -1,11 +1,12 @@
 package com.example.bankapp.accounts.controller;
 
-import com.example.bankapp.accounts.AccountsApplicationTests;
 import com.example.bankapp.accounts.configuration.SecurityConfig;
 import com.example.bankapp.accounts.model.User;
+import com.example.bankapp.accounts.model.UserLoginName;
 import com.example.bankapp.accounts.model.UserMapper;
 import com.example.bankapp.accounts.model.UserResponseDto;
 import com.example.bankapp.accounts.service.AccountService;
+import com.example.bankapp.accounts.service.TransferService;
 import com.example.bankapp.accounts.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -33,12 +35,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
-@Import({SecurityConfig.class, AccountsApplicationTests.class})
+@Import({SecurityConfig.class})
 @ActiveProfiles("test")
 public class UserControllerTest {
 
     @MockitoBean
     private UserService userService;
+
+    @MockitoBean
+    private TransferService transferService;
 
     @MockitoBean
     private AccountService accountService;
@@ -55,6 +60,7 @@ public class UserControllerTest {
     @BeforeEach
     void setUp() {
         Mockito.reset(userService);
+        Mockito.reset(transferService);
         Mockito.reset(accountService);
         Mockito.reset(userMapper);
     }
@@ -62,6 +68,18 @@ public class UserControllerTest {
     @AfterEach
     public void clearSecurityContext() {
         SecurityContextHolder.clearContext();
+    }
+
+    @Test
+    @WithMockUser
+    public void testGetAll() throws Exception {
+        var user = User.builder().id(System.nanoTime()).build();
+        when(userService.findAllLoginName()).thenReturn(List.of(new UserLoginName("login2", "name2")));
+        when(userMapper.toDto(any())).thenReturn(UserResponseDto.builder().build());
+
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].login").value("login2"));
     }
 
     @Test
@@ -171,6 +189,21 @@ public class UserControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.login").value(user.getLogin()));
+    }
+
+    @Test
+    @WithMockUser
+    public void testTransfer() throws Exception {
+        String requestBody = "[" +
+                "{\"currency\": \"RUB\", \"before\": \"1\", \"after\": \"2\", \"login\": \"mary\"}," +
+                "{\"currency\": \"RUB\", \"before\": \"2\", \"after\": \"1\", \"login\": \"john\"}" +
+                "]";
+
+        mockMvc.perform(post("/transfer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody)
+                )
+                .andExpect(status().isOk());
     }
 
 }

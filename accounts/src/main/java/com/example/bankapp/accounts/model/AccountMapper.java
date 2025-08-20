@@ -1,5 +1,6 @@
 package com.example.bankapp.accounts.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +14,9 @@ public class AccountMapper {
             var account = map.get(currency);
             var accountDto = AccountResponseDto.builder().currency(currency);
             if (account != null) {
-                accountDto.value(account.getValue());
+                accountDto.value(account.getValue()).exists(true);
+            } else {
+                accountDto.value(BigDecimal.ZERO).exists(false);
             }
             accountResponseDtos.add(accountDto.build());
         }

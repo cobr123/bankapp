@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -21,6 +22,29 @@ public class UserClient {
         this.webClient = builder
                 .baseUrl(properties.getBaseUrl())
                 .build();
+    }
+
+    public Flux<UserLoginName> getAll() {
+        try {
+            return oAuth2Service
+                    .getTokenValue()
+                    .flux()
+                    .flatMap(accessToken -> {
+                        return webClient
+                                .get()
+                                .uri("/")
+                                .header("Authorization", "Bearer " + accessToken)
+                                .retrieve()
+                                .bodyToFlux(UserLoginName.class)
+                                .onErrorResume(error -> {
+                                    log.error("Error getAll", error);
+                                    return Flux.empty();
+                                });
+                    });
+        } catch (Exception error) {
+            log.error("Error getAll", error);
+            return Flux.empty();
+        }
     }
 
     public Mono<UserResponseDto> findByLogin(String login) {
@@ -131,7 +155,7 @@ public class UserClient {
                                 });
                     });
         } catch (Exception error) {
-            log.error("Error editUserAccounts user {}", dto, error);
+            log.error("Error editUserCash user {}", dto, error);
             return Mono.empty();
         }
     }

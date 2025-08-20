@@ -4,6 +4,7 @@ import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.configuration.SecurityConfig;
 import com.example.bankapp.ui.model.AccountResponseDto;
 import com.example.bankapp.ui.model.Currency;
+import com.example.bankapp.ui.model.UserLoginName;
 import com.example.bankapp.ui.model.UserResponseDto;
 import com.example.bankapp.ui.service.OAuth2Service;
 import org.junit.jupiter.api.AfterEach;
@@ -20,6 +21,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -72,6 +74,7 @@ public class MainControllerTest {
                 AccountResponseDto.builder().currency(Currency.USD).build()
         );
         doReturn(Mono.just(UserResponseDto.builder().accounts(accounts).build())).when(userClient).findByLogin(any());
+        doReturn(Flux.just(new UserLoginName("", ""))).when(userClient).getAll();
 
         webTestClient.get().uri("/main").exchange()
                 .expectStatus().isOk()

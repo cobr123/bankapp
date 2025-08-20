@@ -45,6 +45,22 @@ services:
       - spring.cloud.consul.port=8500
       - spring.cloud.consul.config.import-check.enabled=false
       - USER_CLIENT_BASE_URL=http://gateway/accounts/
+      - TRANSFER_CLIENT_BASE_URL=http://gateway/transfer/
+
+  transfer:
+    build:
+      target: transfer
+    environment:
+      - spring.security.oauth2.client.provider.keycloak.issuer-uri=http://keycloak:8080/realms/master
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloak:8080/realms/master
+      - spring.cloud.consul.host=consul_server
+      - spring.cloud.consul.port=8500
+      - spring.cloud.consul.config.import-check.enabled=false
+      - USER_CLIENT_BASE_URL=http://gateway/accounts/
+    depends_on:
+      - consul_server
+      - keycloak
+    restart: unless-stopped
 
   accounts_cache:
     image: redis:8-alpine

@@ -2,6 +2,7 @@ package com.example.bankapp.ui.controller;
 
 import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.model.RegisterUserRequestDto;
+import com.example.bankapp.ui.model.form.RegisterUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,15 +43,12 @@ public class SignupController {
     public Mono<String> postForm(
             Model model,
             ServerWebExchange exchange,
-            RegisterUserRequestDto form
+            RegisterUserDto form
     ) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .map(securityContext -> {
-                    if (securityContext.isPresent() && securityContext.get().getAuthentication().isAuthenticated()) {
-                        throw new IllegalArgumentException("Вы уже зарегистрированы");
-                    }
                     if (!form.getPassword().equals(form.getConfirmPassword())) {
                         log.warn("Пароли не совпадают, {}", form.getLogin());
                         throw new IllegalArgumentException("Пароли не совпадают");
@@ -62,7 +60,6 @@ public class SignupController {
                     var dto = RegisterUserRequestDto.builder()
                             .login(form.getLogin())
                             .password(newUser.getPassword())
-                            .confirmPassword(newUser.getPassword())
                             .name(form.getName())
                             .birthdate(form.getBirthdate())
                             .build();

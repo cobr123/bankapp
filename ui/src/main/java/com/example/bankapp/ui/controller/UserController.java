@@ -1,8 +1,10 @@
 package com.example.bankapp.ui.controller;
 
+import com.example.bankapp.ui.client.TransferClient;
 import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.model.EditPasswordRequestDto;
 import com.example.bankapp.ui.model.EditUserCashRequestDto;
+import com.example.bankapp.ui.model.TransferRequestDto;
 import com.example.bankapp.ui.model.form.EditUserCashDto;
 import com.example.bankapp.ui.model.form.EditUserDto;
 import com.example.bankapp.ui.model.form.EditUserPasswordDto;
@@ -34,6 +36,7 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder;
     private final UserClient userClient;
+    private final TransferClient transferClient;
 
     @PostMapping("/{login}/editPassword")
     public Mono<String> postEditPassword(
@@ -45,7 +48,7 @@ public class UserController {
                 .map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .map(securityContext -> {
-                    var loggedUser = securityContext.map(sc -> sc.getAuthentication().getName()).orElse("");
+                    String loggedUser = securityContext.map(sc -> sc.getAuthentication().getName()).orElse("");
                     if (!login.equals(loggedUser)) {
                         log.warn("Логины не совпадают, {}", loggedUser);
                         throw new IllegalArgumentException("Логины не совпадают");
@@ -102,7 +105,7 @@ public class UserController {
                 .map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .map(securityContext -> {
-                    var loggedUser = securityContext.map(sc -> sc.getAuthentication().getName()).orElse("");
+                    String loggedUser = securityContext.map(sc -> sc.getAuthentication().getName()).orElse("");
                     if (!login.equals(loggedUser)) {
                         log.warn("Логины не совпадают, {}", loggedUser);
                         throw new IllegalArgumentException("Логины не совпадают");
@@ -117,18 +120,7 @@ public class UserController {
                             .email(form.getEmail())
                             .accounts(form.getAccount())
                             .build();
-                    return userClient.editUserAccounts(dto);
-                })
-                .flatMap(userUi -> {
-                    return exchange.getSession()
-                            .doOnNext(session -> {
-                                SecurityContextImpl securityContext = new SecurityContextImpl();
-                                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userUi.getLogin(), userUi.getPassword(), List.of());
-                                securityContext.setAuthentication(authentication);
-
-                                session.getAttributes().put(DEFAULT_SPRING_SECURITY_CONTEXT_ATTR_NAME, securityContext);
-                            })
-                            .flatMap(WebSession::changeSessionId)
+                    return userClient.editUserAccounts(dto)
                             .thenReturn("redirect:/main");
                 })
                 .onErrorResume(err -> {
@@ -157,7 +149,7 @@ public class UserController {
                 .map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .map(securityContext -> {
-                    var loggedUser = securityContext.map(sc -> sc.getAuthentication().getName()).orElse("");
+                    String loggedUser = securityContext.map(sc -> sc.getAuthentication().getName()).orElse("");
                     if (!login.equals(loggedUser)) {
                         log.warn("Логины не совпадают, {}", loggedUser);
                         throw new IllegalArgumentException("Логины не совпадают");
@@ -171,18 +163,7 @@ public class UserController {
                             .value(form.getValue())
                             .action(form.getAction())
                             .build();
-                    return userClient.editUserCash(dto);
-                })
-                .flatMap(userUi -> {
-                    return exchange.getSession()
-                            .doOnNext(session -> {
-                                SecurityContextImpl securityContext = new SecurityContextImpl();
-                                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userUi.getLogin(), userUi.getPassword(), List.of());
-                                securityContext.setAuthentication(authentication);
-
-                                session.getAttributes().put(DEFAULT_SPRING_SECURITY_CONTEXT_ATTR_NAME, securityContext);
-                            })
-                            .flatMap(WebSession::changeSessionId)
+                    return userClient.editUserCash(dto)
                             .thenReturn("redirect:/main");
                 })
                 .onErrorResume(err -> {
@@ -195,6 +176,43 @@ public class UserController {
                     return exchange.getSession()
                             .map(s -> {
                                 s.getAttributes().put("cashErrors", errors);
+                                return "redirect:/main";
+                            });
+                })
+                .defaultIfEmpty("redirect:/main");
+    }
+
+    @PostMapping("/{login}/transfer")
+    public Mono<String> postTransfer(
+            ServerWebExchange exchange,
+            @PathVariable("login") String login,
+            TransferRequestDto dto
+    ) {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(Optional::of)
+                .defaultIfEmpty(Optional.empty())
+                .map(securityContext -> {
+                    String loggedUser = securityContext.map(sc -> sc.getAuthentication().getName()).orElse("");
+                    if (!login.equals(loggedUser)) {
+                        log.warn("Логины не совпадают, {}", loggedUser);
+                        throw new IllegalArgumentException("Логины не совпадают");
+                    }
+                    return loggedUser;
+                })
+                .flatMap(loggedUser -> {
+                    return transferClient.transfer(loggedUser, dto)
+                            .thenReturn("redirect:/main");
+                })
+                .onErrorResume(err -> {
+                    List<String> errors;
+                    if (err.getClass() == IllegalArgumentException.class) {
+                        errors = List.of(err.getMessage());
+                    } else {
+                        errors = List.of("Ошибка перевода денег, попробуйте позже");
+                    }
+                    return exchange.getSession()
+                            .map(s -> {
+                                s.getAttributes().put("transferErrors", errors);
                                 return "redirect:/main";
                             });
                 })

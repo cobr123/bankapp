@@ -2,6 +2,7 @@ package com.example.bankapp.accounts.configuration;
 
 import com.example.bankapp.accounts.model.Account;
 import com.example.bankapp.accounts.model.User;
+import com.example.bankapp.accounts.model.UserLoginName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
@@ -32,6 +33,16 @@ public class CacheConfig {
                                 .entryTtl(Duration.of(1, ChronoUnit.MINUTES))
                                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
                                         new Jackson2JsonRedisSerializer<>(objectMapper, User.class)
+                                ))
+                )
+                .withCacheConfiguration(
+                        "all_users_login_name",
+                        RedisCacheConfiguration.defaultCacheConfig()
+                                .entryTtl(Duration.of(1, ChronoUnit.MINUTES))
+                                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                                        new Jackson2JsonRedisSerializer<>(
+                                                new ObjectMapper().getTypeFactory().constructCollectionType(List.class, UserLoginName.class)
+                                        )
                                 ))
                 )
                 .withCacheConfiguration(

@@ -8,6 +8,9 @@ management:
 user-client:
   base-url: ${USER_CLIENT_BASE_URL}
 
+transfer-client:
+  base-url: ${TRANSFER_CLIENT_BASE_URL}
+
 spring:
   application:
     name: ui

@@ -30,6 +30,14 @@ spring:
           filters:
             - TokenRelay
             - RewritePath=/accounts/?(?<segment>.*), /$\{segment} # Фильтр, модифицирующий запрос к целевому сервису (убирается имя сервиса в начале)
+        - id: transfer  # ID роута
+          uri: lb://transfer  # URI микросервиса, на который следует перенаправлять запрос
+          order: 20
+          predicates:
+            - Path=/transfer/** # URI поступающего в Gateway запроса, с которым мэтчится роут
+          filters:
+            - TokenRelay
+            - RewritePath=/transfer/?(?<segment>.*), /$\{segment} # Фильтр, модифицирующий запрос к целевому сервису (убирается имя сервиса в начале)
         - id: default_path_to_ui
           uri: lb://ui
           order: 10000

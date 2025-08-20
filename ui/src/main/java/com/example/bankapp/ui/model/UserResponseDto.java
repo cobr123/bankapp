@@ -15,6 +15,6 @@ public class UserResponseDto {
     private String password;
     private String name;
     private String email;
-    private LocalDate dateOfBirth;
+    private LocalDate birthdate;
     private List<AccountResponseDto> accounts;
 } 
