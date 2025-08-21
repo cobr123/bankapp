@@ -1,6 +1,8 @@
 package com.example.bankapp.transfer.controller;
 
+import com.example.bankapp.transfer.client.UserClient;
 import com.example.bankapp.transfer.configuration.SecurityConfig;
+import com.example.bankapp.transfer.model.AccountChangeRequestDto;
 import com.example.bankapp.transfer.model.Currency;
 import com.example.bankapp.transfer.model.TransferRequestDto;
 import com.example.bankapp.transfer.service.TransferService;
@@ -18,9 +20,14 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
 
 @WebFluxTest(TransferController.class)
@@ -30,6 +37,9 @@ public class TransferControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @MockitoBean
+    private UserClient userClient;
 
     @MockitoBean
     private TransferService transferService;
@@ -44,6 +54,7 @@ public class TransferControllerTest {
     @BeforeEach
     void setUp() {
         Mockito.reset(transferService);
+        Mockito.reset(userClient);
     }
 
     @AfterEach
@@ -69,6 +80,9 @@ public class TransferControllerTest {
 
     @Test
     public void testTransferWithAuth() {
+        doReturn(Mono.just(List.of(AccountChangeRequestDto.builder().build()))).when(transferService).getChanges(anyString(), any());
+        doReturn(Mono.empty()).when(userClient).transfer(any());
+
         var dto = TransferRequestDto.builder()
                 .fromCurrency(Currency.RUB)
                 .toCurrency(Currency.RUB)

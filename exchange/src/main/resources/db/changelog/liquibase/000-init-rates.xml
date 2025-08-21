@@ -5,29 +5,23 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="init_accounts" author="roman">
+    <changeSet id="init_rates" author="roman">
         <preConditions onFail="WARN">
-            <tableExists tableName="accounts"/>
+            <tableExists tableName="rates"/>
         </preConditions>
-        <createTable tableName="accounts">
+        <createTable tableName="rates">
             <column name="id" type="bigserial">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="user_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_accounts_user_id" referencedTableName="users" referencedColumnNames="id" deleteCascade="false"/>
-            </column>
             <column name="currency" type="varchar(3)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
-            <column name="value" type="number">
+            <column name="value" type="number" remarks="rate_to_base_currency">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <sql indexName="uidx_accounts_currency" tableName="accounts">
-            CREATE UNIQUE INDEX uidx_accounts_currency ON accounts (currency, user_id);
-        </sql>
         <rollback>
-            <dropTable tableName="accounts"/>
+            <dropTable tableName="rates"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

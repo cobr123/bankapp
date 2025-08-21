@@ -57,6 +57,7 @@ services:
       - spring.cloud.consul.port=8500
       - spring.cloud.consul.config.import-check.enabled=false
       - USER_CLIENT_BASE_URL=http://gateway/accounts/
+      - EXCHANGE_CLIENT_BASE_URL=http://gateway/exchange/
     depends_on:
       - consul_server
       - keycloak
@@ -64,8 +65,6 @@ services:
 
   accounts_cache:
     image: redis:8-alpine
-    ports:
-      - '6379:6379'
 
   accounts:
     build:
@@ -95,5 +94,39 @@ services:
       - /var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=accounts
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+
+  exchange_cache:
+    image: redis:8-alpine
+
+  exchange:
+    build:
+      target: exchange
+    environment:
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloak:8080/realms/master
+      - spring.cloud.consul.host=consul_server
+      - spring.cloud.consul.port=8500
+      - spring.cloud.consul.config.import-check.enabled=false
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://exchange_db:5432/exchange
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - spring.data.redis.host=exchange_cache
+      - spring.data.redis.port=6379
+      - spring.cache.redis.time-to-live=PT5S
+    depends_on:
+      - consul_server
+      - exchange_cache
+      - exchange_db
+      - keycloak
+
+  exchange_db:
+    image: postgres:17-alpine
+    ports:
+      - '5442:5432'
+    volumes:
+      - /var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=exchange
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
