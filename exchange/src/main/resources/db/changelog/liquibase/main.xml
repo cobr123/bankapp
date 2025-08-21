@@ -6,6 +6,5 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <include file="000-init-rates.xml" relativeToChangelogFile="true"/>
-    <include file="010-init-rates-data.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

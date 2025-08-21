@@ -18,15 +18,15 @@ public class RateService {
 
     private final RateRepository rateRepository;
 
-    @Cacheable("all_rates")
+    @Cacheable(value = "all_rates", key = "'all'")
     public List<Rate> findAll() {
         return rateRepository.findAll();
     }
 
-    @CachePut("all_rates")
+    @CachePut(value = "all_rates", key = "'all'")
     @Transactional
-    public void updateAll(List<Rate> rates) {
+    public List<Rate> updateAll(List<Rate> rates) {
         rateRepository.deleteAll();
-        rateRepository.saveAll(rates);
+        return rateRepository.saveAll(rates);
     }
 }

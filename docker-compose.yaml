@@ -63,6 +63,21 @@ services:
       - keycloak
     restart: unless-stopped
 
+  exchange_generator:
+    build:
+      target: exchange_generator
+    environment:
+      - spring.security.oauth2.client.provider.keycloak.issuer-uri=http://keycloak:8080/realms/master
+      - spring.cloud.consul.host=consul_server
+      - spring.cloud.consul.port=8500
+      - spring.cloud.consul.config.import-check.enabled=false
+      - EXCHANGE_CLIENT_BASE_URL=http://gateway/exchange/
+    depends_on:
+      - consul_server
+      - keycloak
+      - exchange
+    restart: unless-stopped
+
   accounts_cache:
     image: redis:8-alpine
 

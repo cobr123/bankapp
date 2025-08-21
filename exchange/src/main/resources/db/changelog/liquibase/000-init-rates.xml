@@ -14,7 +14,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="currency" type="varchar(3)">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="value" type="number" remarks="rate_to_base_currency">
                 <constraints nullable="false"/>
