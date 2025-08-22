@@ -7,5 +7,6 @@
 
     <include file="000-init-users.xml" relativeToChangelogFile="true"/>
     <include file="010-init-accounts.xml" relativeToChangelogFile="true"/>
+    <include file="020-init-email-notifications.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

@@ -1,11 +1,13 @@
 package com.example.bankapp.transfer.service;
 
+import com.example.bankapp.transfer.client.BlockerClient;
 import com.example.bankapp.transfer.client.ExchangeClient;
 import com.example.bankapp.transfer.client.UserClient;
 import com.example.bankapp.transfer.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -21,6 +23,16 @@ public class TransferService {
 
     private final UserClient userClient;
     private final ExchangeClient exchangeClient;
+    private final BlockerClient blockerClient;
+    private final NotificationsService notificationsService;
+
+
+    @Transactional
+    public Mono<Void> transfer(String fromLogin, TransferRequestDto dto) {
+        return getChanges(fromLogin, dto)
+                .flatMap(blockerClient::checkTransfer)
+                .flatMap(userClient::transfer);
+    }
 
     public Mono<List<AccountChangeRequestDto>> getChanges(String fromLogin, TransferRequestDto dto) {
         if (fromLogin.equals(dto.getToLogin()) && dto.getFromCurrency().equals(dto.getToCurrency())) {
@@ -32,20 +44,47 @@ public class TransferService {
         }
         if (dto.getFromCurrency().equals(dto.getToCurrency())) {
             return Mono.zip(userClient.findByLogin(fromLogin), userClient.findByLogin(dto.getToLogin()))
-                    .map(pair -> {
+                    .flatMap(pair -> {
                         var fromUser = pair.getT1();
                         var toUser = pair.getT2();
-                        return getChanges(dto.getFromCurrency(), dto.getToCurrency(), dto.getValue(), dto.getValue(), fromUser, toUser);
+                        return addEmailNotification(dto.getFromCurrency(), dto.getToCurrency(), dto.getValue(), dto.getValue(), fromUser, toUser)
+                                .thenReturn(getChanges(dto.getFromCurrency(), dto.getToCurrency(), dto.getValue(), dto.getValue(), fromUser, toUser));
                     });
         } else {
             return Mono.zip(userClient.findByLogin(fromLogin), userClient.findByLogin(dto.getToLogin()), exchangeClient.getRates().collectList())
-                    .map(pair -> {
+                    .flatMap(pair -> {
                         var fromUser = pair.getT1();
                         var toUser = pair.getT2();
                         var rates = pair.getT3();
                         var toValue = convert(dto, rates);
-                        return getChanges(dto.getFromCurrency(), dto.getToCurrency(), dto.getValue(), toValue, fromUser, toUser);
+                        return addEmailNotification(dto.getFromCurrency(), dto.getToCurrency(), dto.getValue(), toValue, fromUser, toUser)
+                                .thenReturn(getChanges(dto.getFromCurrency(), dto.getToCurrency(), dto.getValue(), toValue, fromUser, toUser));
                     });
+        }
+    }
+
+    private Mono<Void> addEmailNotification(Currency fromCurrency, Currency toCurrency, BigDecimal fromValue, BigDecimal toValue, UserResponseDto fromUser, UserResponseDto toUser) {
+        if (fromUser.getLogin().equals(toUser.getLogin())) {
+            var msg = EmailNotification.builder()
+                    .email(fromUser.getEmail())
+                    .subject("Перевод средств")
+                    .message(fromValue + " " + fromCurrency + " переведены в " + toValue + " " + toCurrency)
+                    .build();
+            return notificationsService.addEmailNotification(msg).then();
+        } else {
+            var msg1 = EmailNotification.builder()
+                    .email(fromUser.getEmail())
+                    .subject("Перевод средств")
+                    .message(fromValue + " " + fromCurrency + " переведены в " + toValue + " " + toCurrency + " пользователя " + toUser.getLogin())
+                    .build();
+            var msg2 = EmailNotification.builder()
+                    .email(toUser.getEmail())
+                    .subject("Перевод средств")
+                    .message("Пользователь " + fromUser.getLogin() + " перевел вам " + toValue + " " + toCurrency)
+                    .build();
+            return notificationsService.addEmailNotification(msg1)
+                    .then(notificationsService.addEmailNotification(msg2))
+                    .then();
         }
     }
 

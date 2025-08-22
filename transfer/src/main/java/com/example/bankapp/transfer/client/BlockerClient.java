@@ -25,7 +25,7 @@ public class BlockerClient {
                 .build();
     }
 
-    public Mono<Void> checkTransfer(List<AccountChangeRequestDto> dto) {
+    public Mono<List<AccountChangeRequestDto>> checkTransfer(List<AccountChangeRequestDto> dto) {
         try {
             return oAuth2Service
                     .getTokenValue()
@@ -40,7 +40,7 @@ public class BlockerClient {
                                 .onErrorResume(WebClientResponseException.UnprocessableEntity.class, ex -> {
                                     return Mono.error(new IllegalArgumentException("Перевод заблокирован"));
                                 })
-                                .then();
+                                .thenReturn(dto);
                     });
         } catch (Exception error) {
             log.error("Error checkTransfer {}", dto, error);

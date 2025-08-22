@@ -57,17 +57,34 @@ services:
       - spring.cloud.consul.host=consul_server
       - spring.cloud.consul.port=8500
       - spring.cloud.consul.config.import-check.enabled=false
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://transfer_db:5432/transfer
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
       - USER_CLIENT_BASE_URL=http://gateway/accounts/
       - EXCHANGE_CLIENT_BASE_URL=http://gateway/exchange/
       - BLOCKER_CLIENT_BASE_URL=http://gateway/blocker/
+      - NOTIFICATIONS_CLIENT_BASE_URL=http://gateway/notifications/
     depends_on:
       - consul_server
       - keycloak
+      - transfer_db
     restart: unless-stopped
+
+  transfer_db:
+    image: postgres:17-alpine
+    ports:
+      - '5452:5432'
+    volumes:
+      - /var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=transfer
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
 
   exchange_generator:
     build:
       target: exchange_generator
+    restart: unless-stopped
     environment:
       - spring.security.oauth2.client.provider.keycloak.issuer-uri=http://keycloak:8080/realms/master
       - spring.cloud.consul.host=consul_server
@@ -78,7 +95,6 @@ services:
       - consul_server
       - keycloak
       - exchange
-    restart: unless-stopped
 
   accounts_cache:
     image: redis:8-alpine
@@ -86,7 +102,9 @@ services:
   accounts:
     build:
       target: accounts
+    restart: unless-stopped
     environment:
+      - spring.security.oauth2.client.provider.keycloak.issuer-uri=http://keycloak:8080/realms/master
       - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloak:8080/realms/master
       - spring.cloud.consul.host=consul_server
       - spring.cloud.consul.port=8500
@@ -97,6 +115,7 @@ services:
       - spring.data.redis.host=accounts_cache
       - spring.data.redis.port=6379
       - spring.cache.redis.time-to-live=PT5S
+      - NOTIFICATIONS_CLIENT_BASE_URL=http://gateway/notifications/
     depends_on:
       - consul_server
       - accounts_cache
@@ -151,12 +170,25 @@ services:
   blocker:
     build:
       target: blocker
+    depends_on:
+      - consul_server
+      - keycloak
     restart: unless-stopped
     environment:
       - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloak:8080/realms/master
       - spring.cloud.consul.host=consul_server
       - spring.cloud.consul.port=8500
       - spring.cloud.consul.config.import-check.enabled=false
+
+  notifications:
+    build:
+      target: notifications
     depends_on:
       - consul_server
       - keycloak
+    restart: unless-stopped
+    environment:
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloak:8080/realms/master
+      - spring.cloud.consul.host=consul_server
+      - spring.cloud.consul.port=8500
+      - spring.cloud.consul.config.import-check.enabled=false

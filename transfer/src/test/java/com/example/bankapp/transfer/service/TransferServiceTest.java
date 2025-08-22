@@ -1,13 +1,16 @@
 package com.example.bankapp.transfer.service;
 
+import com.example.bankapp.transfer.TransferApplicationTests;
 import com.example.bankapp.transfer.client.ExchangeClient;
 import com.example.bankapp.transfer.client.UserClient;
 import com.example.bankapp.transfer.model.*;
+import com.example.bankapp.transfer.repository.EmailNotificationsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
@@ -27,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(TransferApplicationTests.class)
 public class TransferServiceTest {
 
     @Autowired
@@ -34,6 +38,9 @@ public class TransferServiceTest {
 
     @MockitoBean
     private UserClient userClient;
+
+    @MockitoBean
+    private EmailNotificationsRepository emailNotificationsRepository;
 
     @MockitoBean
     private ExchangeClient exchangeClient;

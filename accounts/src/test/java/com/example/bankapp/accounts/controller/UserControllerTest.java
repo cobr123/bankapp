@@ -5,9 +5,7 @@ import com.example.bankapp.accounts.model.User;
 import com.example.bankapp.accounts.model.UserLoginName;
 import com.example.bankapp.accounts.model.UserMapper;
 import com.example.bankapp.accounts.model.UserResponseDto;
-import com.example.bankapp.accounts.service.AccountService;
-import com.example.bankapp.accounts.service.TransferService;
-import com.example.bankapp.accounts.service.UserService;
+import com.example.bankapp.accounts.service.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -48,6 +48,9 @@ public class UserControllerTest {
     @MockitoBean
     private AccountService accountService;
 
+    @MockitoBean
+    private UserSettingsService userSettingsService;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -56,6 +59,11 @@ public class UserControllerTest {
 
     @MockitoBean
     private UserMapper userMapper;
+
+    @MockitoBean
+    private ClientRegistrationRepository clientRegistrationRepository;
+    @MockitoBean
+    private OAuth2AuthorizedClientService authorizedClientService;
 
     @BeforeEach
     void setUp() {
@@ -73,7 +81,6 @@ public class UserControllerTest {
     @Test
     @WithMockUser
     public void testGetAll() throws Exception {
-        var user = User.builder().id(System.nanoTime()).build();
         when(userService.findAllLoginName()).thenReturn(List.of(new UserLoginName("login2", "name2")));
         when(userMapper.toDto(any())).thenReturn(UserResponseDto.builder().build());
 
@@ -142,7 +149,7 @@ public class UserControllerTest {
     public void testEditPassword() throws Exception {
         var user = User.builder().login("john").build();
         when(userService.findByLogin(anyString())).thenReturn(Optional.of(user));
-        when(userService.update(any())).thenReturn(user);
+        when(userSettingsService.changePassword(any(), anyString())).thenReturn(user);
         when(userMapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
 
         String requestBody = "{\"password\": \"123\"}";
@@ -160,7 +167,8 @@ public class UserControllerTest {
     public void testEditUserAccounts() throws Exception {
         var user = User.builder().login("john").build();
         when(userService.findByLogin(anyString())).thenReturn(Optional.of(user));
-        when(userService.update(any())).thenReturn(user);
+        when(userSettingsService.editUser(any(), any())).thenReturn(user);
+        when(transferService.updateUserCurrency(any(), any())).thenReturn(user);
         when(userMapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
 
         String requestBody = "{\"name\": \"new name\", \"email\": \"new email\", \"birthdate\": \"" + LocalDate.now().minusYears(19) + "\"}";
@@ -178,7 +186,7 @@ public class UserControllerTest {
     public void testEditUserCash() throws Exception {
         var user = User.builder().login("john").build();
         when(userService.findByLogin(anyString())).thenReturn(Optional.of(user));
-        when(userService.update(any())).thenReturn(user);
+        when(transferService.updateUserCash(any(), any())).thenReturn(user);
         when(userMapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
 
         String requestBody = "{\"action\": \"PUT\", \"value\": \"1\"}";

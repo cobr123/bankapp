@@ -1,7 +1,5 @@
 package com.example.bankapp.transfer.controller;
 
-import com.example.bankapp.transfer.client.BlockerClient;
-import com.example.bankapp.transfer.client.UserClient;
 import com.example.bankapp.transfer.model.TransferRequestDto;
 import com.example.bankapp.transfer.service.TransferService;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +14,10 @@ import reactor.core.publisher.Mono;
 public class TransferController {
 
     private final TransferService transferService;
-    private final UserClient userClient;
-    private final BlockerClient blockerClient;
 
     @PostMapping("/{login}")
     public Mono<Void> transfer(@PathVariable("login") String fromLogin, @RequestBody TransferRequestDto dto) {
-        return transferService.getChanges(fromLogin, dto)
-                .flatMap(changes -> blockerClient.checkTransfer(changes).then(userClient.transfer(changes)));
+        return transferService.transfer(fromLogin, dto);
     }
 
 } 

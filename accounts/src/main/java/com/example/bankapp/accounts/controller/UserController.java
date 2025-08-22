@@ -4,6 +4,7 @@ import com.example.bankapp.accounts.model.*;
 import com.example.bankapp.accounts.service.AccountService;
 import com.example.bankapp.accounts.service.TransferService;
 import com.example.bankapp.accounts.service.UserService;
+import com.example.bankapp.accounts.service.UserSettingsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.Set;
 public class UserController {
 
     private final UserService userService;
+    private final UserSettingsService userSettingsService;
     private final AccountService accountService;
 
     private final UserMapper userMapper;
@@ -31,10 +33,7 @@ public class UserController {
     @PostMapping("/{login}/cash")
     public ResponseEntity<UserResponseDto> editUserCash(@PathVariable("login") String login, @RequestBody EditUserCashRequestDto dto) {
         return userService.findByLogin(login)
-                .map(user -> {
-                    transferService.updateUserCash(user.getId(), dto);
-                    return user;
-                })
+                .map(user -> transferService.updateUserCash(user, dto))
                 .map(user -> accountMapper.toDto(accountService.findByUserId(user.getId()), userMapper.toDto(user)))
                 .map(u -> ResponseEntity.status(HttpStatus.OK).body(u))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -42,18 +41,9 @@ public class UserController {
 
     @PostMapping("/{login}/editUserAccounts")
     public ResponseEntity<UserResponseDto> editUserAccounts(@PathVariable("login") String login, @RequestBody EditUserRequestDto dto) {
-        userService.validateBirthdate(dto.getBirthdate(), login);
         return userService.findByLogin(login)
-                .map(user -> {
-                    user.setName(dto.getName());
-                    user.setEmail(dto.getEmail());
-                    user.setBirthdate(dto.getBirthdate());
-                    return userService.update(user);
-                })
-                .map(user -> {
-                    transferService.updateUserCurrency(user.getId(), Optional.ofNullable(dto.getAccounts()).orElse(Set.of()));
-                    return user;
-                })
+                .map(user -> userSettingsService.editUser(user, dto))
+                .map(user -> transferService.updateUserCurrency(user, Optional.ofNullable(dto.getAccounts()).orElse(Set.of())))
                 .map(user -> accountMapper.toDto(accountService.findByUserId(user.getId()), userMapper.toDto(user)))
                 .map(u -> ResponseEntity.status(HttpStatus.OK).body(u))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -61,15 +51,8 @@ public class UserController {
 
     @PostMapping("/{login}/editPassword")
     public ResponseEntity<UserResponseDto> editPassword(@PathVariable("login") String login, @RequestBody EditPasswordRequestDto dto) {
-        if (dto.getPassword().isBlank()) {
-            log.warn("Пароль не может быть пустым, {}", login);
-            throw new IllegalArgumentException("Пароль не может быть пустым");
-        }
         return userService.findByLogin(login)
-                .map(user -> {
-                    user.setPassword(dto.getPassword());
-                    return userService.update(user);
-                })
+                .map(user -> userSettingsService.changePassword(user, dto.getPassword()))
                 .map(user -> accountMapper.toDto(accountService.findByUserId(user.getId()), userMapper.toDto(user)))
                 .map(u -> ResponseEntity.status(HttpStatus.OK).body(u))
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());

@@ -54,6 +54,14 @@ spring:
           filters:
             - TokenRelay
             - RewritePath=/blocker/?(?<segment>.*), /$\{segment} # Фильтр, модифицирующий запрос к целевому сервису (убирается имя сервиса в начале)
+        - id: notifications  # ID роута
+          uri: lb://notifications  # URI микросервиса, на который следует перенаправлять запрос
+          order: 50
+          predicates:
+            - Path=/notifications/** # URI поступающего в Gateway запроса, с которым мэтчится роут
+          filters:
+            - TokenRelay
+            - RewritePath=/notifications/?(?<segment>.*), /$\{segment} # Фильтр, модифицирующий запрос к целевому сервису (убирается имя сервиса в начале)
         - id: default_path_to_ui
           uri: lb://ui
           order: 10000

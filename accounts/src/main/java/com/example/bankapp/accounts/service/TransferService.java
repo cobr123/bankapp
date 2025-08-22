@@ -18,6 +18,7 @@ import java.util.Set;
 public class TransferService {
     private final UserService userService;
     private final AccountService accountService;
+    private final NotificationsService notificationsService;
 
     @Transactional
     public void transfer(List<AccountChangeRequestDto> dto) {
@@ -42,44 +43,81 @@ public class TransferService {
     }
 
     @Transactional
-    public void updateUserCurrency(Long userId, Set<Currency> currencies) {
+    public User updateUserCurrency(User user, Set<Currency> currencies) {
         var currenciesToCreate = new HashSet<>(currencies);
-        for (Account account : accountService.findByUserId(userId)) {
+        for (Account account : accountService.findByUserId(user.getId())) {
             currenciesToCreate.remove(account.getCurrency());
             if (!currencies.contains(account.getCurrency())) {
                 if (account.getValue().compareTo(BigDecimal.ZERO) != 0) {
                     throw new IllegalArgumentException("Удалять можно только счета с нулевым балансом");
                 }
                 accountService.delete(account);
+                if (user.getEmail() != null && !user.getEmail().isBlank()) {
+                    var msg = EmailNotification.builder()
+                            .email(user.getEmail())
+                            .subject("Удаление счета")
+                            .message("Счет " + account.getCurrency() + " удален")
+                            .build();
+                    notificationsService.addEmailNotification(msg);
+                }
             }
         }
         for (Currency currency : currenciesToCreate) {
             var account = Account.builder()
-                    .userId(userId)
+                    .userId(user.getId())
                     .currency(currency)
                     .value(BigDecimal.ZERO)
                     .build();
             accountService.save(account);
+            if (user.getEmail() != null && !user.getEmail().isBlank()) {
+                var msg = EmailNotification.builder()
+                        .email(user.getEmail())
+                        .subject("Создание счета")
+                        .message("Счет " + currency + " создан")
+                        .build();
+                notificationsService.addEmailNotification(msg);
+            }
         }
+        return user;
     }
 
-    public void updateUserCash(Long userId, EditUserCashRequestDto dto) {
+    @Transactional
+    public User updateUserCash(User user, EditUserCashRequestDto dto) {
         if (dto.getValue().compareTo(BigDecimal.ZERO) <= 0) {
-            log.warn("Сумма должна быть больше нуля, {}", userId);
+            log.warn("Сумма должна быть больше нуля, {}", user.getLogin());
             throw new IllegalArgumentException("Сумма должна быть больше нуля");
         }
-        var account = accountService.findByUserIdAndCurrency(userId, dto.getCurrency())
-                .orElse(Account.builder().value(BigDecimal.ZERO).userId(userId).currency(dto.getCurrency()).build());
+        var account = accountService.findByUserIdAndCurrency(user.getId(), dto.getCurrency())
+                .orElse(Account.builder().value(BigDecimal.ZERO).userId(user.getId()).currency(dto.getCurrency()).build());
         if (EditUserCashAction.PUT.equals(dto.getAction())) {
             account.setValue(account.getValue().add(dto.getValue()));
             accountService.save(account);
+
+            if (user.getEmail() != null && !user.getEmail().isBlank()) {
+                var msg = EmailNotification.builder()
+                        .email(user.getEmail())
+                        .subject("Внесение наличных")
+                        .message("Внесение наличных " + dto.getCurrency() + " на сумму " + dto.getValue())
+                        .build();
+                notificationsService.addEmailNotification(msg);
+            }
         } else if (EditUserCashAction.GET.equals(dto.getAction())) {
             if (account.getValue().compareTo(dto.getValue()) < 0) {
-                log.warn("Недостаточно средств для снятия, {}", userId);
+                log.warn("Недостаточно средств для снятия, {}", user.getLogin());
                 throw new IllegalArgumentException("Недостаточно средств для снятия");
             }
             account.setValue(account.getValue().add(dto.getValue().negate()));
             accountService.save(account);
+
+            if (user.getEmail() != null && !user.getEmail().isBlank()) {
+                var msg = EmailNotification.builder()
+                        .email(user.getEmail())
+                        .subject("Снятие наличных")
+                        .message("Снятие наличных " + dto.getCurrency() + " на сумму " + dto.getValue())
+                        .build();
+                notificationsService.addEmailNotification(msg);
+            }
         }
+        return user;
     }
 }
