@@ -138,25 +138,4 @@ public class UserClient {
         }
     }
 
-    public Mono<UserResponseDto> editUserCash(EditUserCashRequestDto dto) {
-        try {
-            return oAuth2Service
-                    .getTokenValue()
-                    .flatMap(accessToken -> {
-                        return webClient
-                                .post()
-                                .uri("/{login}/cash", dto.getLogin())
-                                .bodyValue(dto)
-                                .header("Authorization", "Bearer " + accessToken)
-                                .retrieve()
-                                .bodyToMono(UserResponseDto.class)
-                                .onErrorResume(WebClientResponseException.BadRequest.class, ex -> {
-                                    return Mono.error(new IllegalArgumentException(ex.getResponseBodyAs(ErrorResponseDto.class).getDetail()));
-                                });
-                    });
-        } catch (Exception error) {
-            log.error("Error editUserCash user {}", dto, error);
-            return Mono.empty();
-        }
-    }
 }

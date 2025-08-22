@@ -32,7 +32,7 @@ public class BlockerClient {
                     .flatMap(accessToken -> {
                         return webClient
                                 .post()
-                                .uri("/transfer")
+                                .uri("/")
                                 .bodyValue(dto)
                                 .header("Authorization", "Bearer " + accessToken)
                                 .retrieve()

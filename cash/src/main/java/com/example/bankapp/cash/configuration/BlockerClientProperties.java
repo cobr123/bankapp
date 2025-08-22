@@ -1,4 +1,4 @@
-package com.example.bankapp.ui.configuration;
+package com.example.bankapp.cash.configuration;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

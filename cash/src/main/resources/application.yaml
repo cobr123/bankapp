@@ -8,15 +8,25 @@ management:
 user-client:
   base-url: ${USER_CLIENT_BASE_URL}
 
-transfer-client:
-  base-url: ${TRANSFER_CLIENT_BASE_URL}
+blocker-client:
+  base-url: ${BLOCKER_CLIENT_BASE_URL}
 
-cash-client:
-  base-url: ${CASH_CLIENT_BASE_URL}
+notifications-client:
+  base-url: ${NOTIFICATIONS_CLIENT_BASE_URL}
 
 spring:
   application:
-    name: ui
+    name: cash
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  liquibase:
+    change-log: 'classpath:/db/changelog/liquibase/main.xml'
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
   cloud:
     consul:
       config:

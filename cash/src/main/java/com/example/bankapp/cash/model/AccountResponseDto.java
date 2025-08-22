@@ -1,4 +1,4 @@
-package com.example.bankapp.blocker.model;
+package com.example.bankapp.cash.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,11 +7,10 @@ import lombok.Getter;
 import java.math.BigDecimal;
 
 @Getter
-@Builder
 @AllArgsConstructor
-public class EditUserCashRequestDto {
-    private String login;
+@Builder
+public class AccountResponseDto {
     private Currency currency;
     private BigDecimal value;
-    private EditUserCashAction action;
+    private boolean exists;
 }

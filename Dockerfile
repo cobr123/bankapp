@@ -43,3 +43,8 @@ CMD ["java", "-jar", "/app.jar"]
 FROM amazoncorretto:21-alpine-jdk AS notifications
 COPY --from=build /bankapp/notifications/build/libs/*.jar app.jar
 CMD ["java", "-jar", "/app.jar"]
+
+# Run the application (using the JRE, not the JDK)
+FROM amazoncorretto:21-alpine-jdk AS cash
+COPY --from=build /bankapp/cash/build/libs/*.jar app.jar
+CMD ["java", "-jar", "/app.jar"]

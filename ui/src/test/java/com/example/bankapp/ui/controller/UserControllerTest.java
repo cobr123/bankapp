@@ -1,6 +1,6 @@
 package com.example.bankapp.ui.controller;
 
-import com.example.bankapp.ui.client.BlockerClient;
+import com.example.bankapp.ui.client.CashClient;
 import com.example.bankapp.ui.client.TransferClient;
 import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.configuration.SecurityConfig;
@@ -38,7 +38,7 @@ public class UserControllerTest {
     private UserClient userClient;
 
     @MockitoBean
-    private BlockerClient blockerClient;
+    private CashClient cashClient;
 
     @MockitoBean
     private TransferClient transferClient;
@@ -53,7 +53,7 @@ public class UserControllerTest {
     @BeforeEach
     void setUp() {
         Mockito.reset(userClient);
-        Mockito.reset(blockerClient);
+        Mockito.reset(cashClient);
         Mockito.reset(transferClient);
         Mockito.reset(oAuth2Service);
     }
@@ -66,7 +66,6 @@ public class UserControllerTest {
     @Test
     @WithMockUser("userLogin")
     public void testChangePassword() {
-        doReturn(Mono.empty()).when(blockerClient).checkEditUserCash(any());
         webTestClient
                 .mutateWith(csrf())
                 .post()
@@ -84,7 +83,6 @@ public class UserControllerTest {
     @Test
     @WithMockUser("userLogin")
     public void testEditUserAccounts() {
-        doReturn(Mono.empty()).when(blockerClient).checkEditUserCash(any());
         webTestClient
                 .mutateWith(csrf())
                 .post()
@@ -101,7 +99,6 @@ public class UserControllerTest {
     @Test
     @WithMockUser("userLogin1")
     public void testTransfer() {
-        doReturn(Mono.empty()).when(blockerClient).checkEditUserCash(any());
         webTestClient
                 .mutateWith(csrf())
                 .post()

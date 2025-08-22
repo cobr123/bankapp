@@ -80,44 +80,4 @@ public class TransferService {
         }
         return user;
     }
-
-    @Transactional
-    public User updateUserCash(User user, EditUserCashRequestDto dto) {
-        if (dto.getValue().compareTo(BigDecimal.ZERO) <= 0) {
-            log.warn("Сумма должна быть больше нуля, {}", user.getLogin());
-            throw new IllegalArgumentException("Сумма должна быть больше нуля");
-        }
-        var account = accountService.findByUserIdAndCurrency(user.getId(), dto.getCurrency())
-                .orElse(Account.builder().value(BigDecimal.ZERO).userId(user.getId()).currency(dto.getCurrency()).build());
-        if (EditUserCashAction.PUT.equals(dto.getAction())) {
-            account.setValue(account.getValue().add(dto.getValue()));
-            accountService.save(account);
-
-            if (user.getEmail() != null && !user.getEmail().isBlank()) {
-                var msg = EmailNotification.builder()
-                        .email(user.getEmail())
-                        .subject("Внесение наличных")
-                        .message("Внесение наличных " + dto.getCurrency() + " на сумму " + dto.getValue())
-                        .build();
-                notificationsService.addEmailNotification(msg);
-            }
-        } else if (EditUserCashAction.GET.equals(dto.getAction())) {
-            if (account.getValue().compareTo(dto.getValue()) < 0) {
-                log.warn("Недостаточно средств для снятия, {}", user.getLogin());
-                throw new IllegalArgumentException("Недостаточно средств для снятия");
-            }
-            account.setValue(account.getValue().add(dto.getValue().negate()));
-            accountService.save(account);
-
-            if (user.getEmail() != null && !user.getEmail().isBlank()) {
-                var msg = EmailNotification.builder()
-                        .email(user.getEmail())
-                        .subject("Снятие наличных")
-                        .message("Снятие наличных " + dto.getCurrency() + " на сумму " + dto.getValue())
-                        .build();
-                notificationsService.addEmailNotification(msg);
-            }
-        }
-        return user;
-    }
 }

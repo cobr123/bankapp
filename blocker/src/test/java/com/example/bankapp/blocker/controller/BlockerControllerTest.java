@@ -3,8 +3,6 @@ package com.example.bankapp.blocker.controller;
 import com.example.bankapp.blocker.configuration.SecurityConfig;
 import com.example.bankapp.blocker.model.AccountChangeRequestDto;
 import com.example.bankapp.blocker.model.Currency;
-import com.example.bankapp.blocker.model.EditUserCashAction;
-import com.example.bankapp.blocker.model.EditUserCashRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +50,7 @@ public class BlockerControllerTest {
                 .build();
         webTestClient
                 .post()
-                .uri("/transfer")
+                .uri("/")
                 .bodyValue(List.of(dto))
                 .exchange()
                 .expectStatus().isUnauthorized();
@@ -70,7 +68,7 @@ public class BlockerControllerTest {
         webTestClient
                 .mutateWith(mockUser("john"))
                 .post()
-                .uri("/transfer")
+                .uri("/")
                 .bodyValue(List.of(dto))
                 .exchange()
                 .expectStatus().isOk();
@@ -88,61 +86,10 @@ public class BlockerControllerTest {
         webTestClient
                 .mutateWith(mockUser("john"))
                 .post()
-                .uri("/transfer")
+                .uri("/")
                 .bodyValue(List.of(dto))
                 .exchange()
                 .expectStatus().isEqualTo(422);
     }
 
-    @Test
-    public void testCashNoAuth() {
-        var dto = EditUserCashRequestDto.builder()
-                .login("john")
-                .currency(Currency.RUB)
-                .value(BigDecimal.ONE)
-                .action(EditUserCashAction.PUT)
-                .build();
-        webTestClient
-                .post()
-                .uri("/cash")
-                .bodyValue(dto)
-                .exchange()
-                .expectStatus().isUnauthorized();
-    }
-
-    @Test
-    public void testCashTrueWithAuth() {
-        var dto = EditUserCashRequestDto.builder()
-                .login("john")
-                .currency(Currency.RUB)
-                .value(BigDecimal.ONE)
-                .action(EditUserCashAction.PUT)
-                .build();
-        doReturn(true).when(randomGenerator).nextBoolean();
-        webTestClient
-                .mutateWith(mockUser("john"))
-                .post()
-                .uri("/cash")
-                .bodyValue(dto)
-                .exchange()
-                .expectStatus().isOk();
-    }
-
-    @Test
-    public void testCashFalseWithAuth() {
-        var dto = EditUserCashRequestDto.builder()
-                .login("john")
-                .currency(Currency.RUB)
-                .value(BigDecimal.ONE)
-                .action(EditUserCashAction.PUT)
-                .build();
-        doReturn(false).when(randomGenerator).nextBoolean();
-        webTestClient
-                .mutateWith(mockUser("john"))
-                .post()
-                .uri("/cash")
-                .bodyValue(dto)
-                .exchange()
-                .expectStatus().isEqualTo(422);
-    }
 }

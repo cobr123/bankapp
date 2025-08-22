@@ -183,24 +183,6 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser
-    public void testEditUserCash() throws Exception {
-        var user = User.builder().login("john").build();
-        when(userService.findByLogin(anyString())).thenReturn(Optional.of(user));
-        when(transferService.updateUserCash(any(), any())).thenReturn(user);
-        when(userMapper.toDto(any())).thenReturn(UserResponseDto.builder().login(user.getLogin()).build());
-
-        String requestBody = "{\"action\": \"PUT\", \"value\": \"1\"}";
-
-        mockMvc.perform(post("/john/cash")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.login").value(user.getLogin()));
-    }
-
-    @Test
-    @WithMockUser
     public void testTransfer() throws Exception {
         String requestBody = "[" +
                 "{\"currency\": \"RUB\", \"before\": \"1\", \"after\": \"2\", \"login\": \"mary\"}," +

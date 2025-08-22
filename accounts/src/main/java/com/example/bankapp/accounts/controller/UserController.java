@@ -30,15 +30,6 @@ public class UserController {
 
     private final TransferService transferService;
 
-    @PostMapping("/{login}/cash")
-    public ResponseEntity<UserResponseDto> editUserCash(@PathVariable("login") String login, @RequestBody EditUserCashRequestDto dto) {
-        return userService.findByLogin(login)
-                .map(user -> transferService.updateUserCash(user, dto))
-                .map(user -> accountMapper.toDto(accountService.findByUserId(user.getId()), userMapper.toDto(user)))
-                .map(u -> ResponseEntity.status(HttpStatus.OK).body(u))
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
-
     @PostMapping("/{login}/editUserAccounts")
     public ResponseEntity<UserResponseDto> editUserAccounts(@PathVariable("login") String login, @RequestBody EditUserRequestDto dto) {
         return userService.findByLogin(login)

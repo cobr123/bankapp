@@ -1,6 +1,6 @@
 package com.example.bankapp.ui;
 
-import com.example.bankapp.ui.configuration.BlockerClientProperties;
+import com.example.bankapp.ui.configuration.CashClientProperties;
 import com.example.bankapp.ui.configuration.TransferClientProperties;
 import com.example.bankapp.ui.configuration.UserClientProperties;
 import org.springframework.boot.SpringApplication;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
-@EnableConfigurationProperties({UserClientProperties.class, TransferClientProperties.class, BlockerClientProperties.class})
+@EnableConfigurationProperties({UserClientProperties.class, TransferClientProperties.class, CashClientProperties.class})
 public class UiApplication {
 
     public static void main(String[] args) {

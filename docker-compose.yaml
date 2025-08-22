@@ -46,7 +46,7 @@ services:
       - spring.cloud.consul.config.import-check.enabled=false
       - USER_CLIENT_BASE_URL=http://gateway/accounts/
       - TRANSFER_CLIENT_BASE_URL=http://gateway/transfer/
-      - BLOCKER_CLIENT_BASE_URL=http://gateway/blocker/
+      - CASH_CLIENT_BASE_URL=http://gateway/cash/
 
   transfer:
     build:
@@ -192,3 +192,35 @@ services:
       - spring.cloud.consul.host=consul_server
       - spring.cloud.consul.port=8500
       - spring.cloud.consul.config.import-check.enabled=false
+
+  cash:
+    build:
+      target: cash
+    environment:
+      - spring.security.oauth2.client.provider.keycloak.issuer-uri=http://keycloak:8080/realms/master
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloak:8080/realms/master
+      - spring.cloud.consul.host=consul_server
+      - spring.cloud.consul.port=8500
+      - spring.cloud.consul.config.import-check.enabled=false
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://cash_db:5432/cash
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - USER_CLIENT_BASE_URL=http://gateway/accounts/
+      - BLOCKER_CLIENT_BASE_URL=http://gateway/blocker/
+      - NOTIFICATIONS_CLIENT_BASE_URL=http://gateway/notifications/
+    depends_on:
+      - consul_server
+      - keycloak
+      - cash_db
+    restart: unless-stopped
+
+  cash_db:
+    image: postgres:17-alpine
+    ports:
+      - '5462:5432'
+    volumes:
+      - /var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=cash
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root

@@ -1,4 +1,4 @@
-package com.example.bankapp.blocker.model;
+package com.example.bankapp.cash.model;
 
 public enum EditUserCashAction {
     PUT, GET

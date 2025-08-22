@@ -1,7 +1,6 @@
 package com.example.bankapp.blocker.controller;
 
 import com.example.bankapp.blocker.model.AccountChangeRequestDto;
-import com.example.bankapp.blocker.model.EditUserCashRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,16 +18,7 @@ public class BlockerController {
 
     private final RandomGenerator random;
 
-    @PostMapping("/cash")
-    public ResponseEntity<Void> cash(@RequestBody EditUserCashRequestDto dto) {
-        if (random.nextBoolean()) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-        }
-    }
-
-    @PostMapping("/transfer")
+    @PostMapping("/")
     public ResponseEntity<Void> transfer(@RequestBody List<AccountChangeRequestDto> dto) {
         if (random.nextBoolean()) {
             return ResponseEntity.ok().build();
