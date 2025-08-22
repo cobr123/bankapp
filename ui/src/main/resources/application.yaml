@@ -11,6 +11,9 @@ user-client:
 transfer-client:
   base-url: ${TRANSFER_CLIENT_BASE_URL}
 
+blocker-client:
+  base-url: ${BLOCKER_CLIENT_BASE_URL}
+
 spring:
   application:
     name: ui

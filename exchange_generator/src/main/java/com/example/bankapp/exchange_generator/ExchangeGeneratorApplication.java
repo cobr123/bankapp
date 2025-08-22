@@ -14,6 +14,8 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.web.client.RestClient;
 
+import java.util.random.RandomGenerator;
+
 @SpringBootApplication
 @EnableConfigurationProperties(ExchangeClientProperties.class)
 @EnableScheduling
@@ -44,5 +46,10 @@ public class ExchangeGeneratorApplication {
         );
 
         return manager;
+    }
+
+    @Bean
+    public RandomGenerator randomGenerator(){
+        return RandomGenerator.getDefault();
     }
 }

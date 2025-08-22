@@ -1,5 +1,6 @@
 package com.example.bankapp.ui.controller;
 
+import com.example.bankapp.ui.client.BlockerClient;
 import com.example.bankapp.ui.client.TransferClient;
 import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.configuration.SecurityConfig;
@@ -19,7 +20,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
 @WebFluxTest(UserController.class)
@@ -34,6 +38,9 @@ public class UserControllerTest {
     private UserClient userClient;
 
     @MockitoBean
+    private BlockerClient blockerClient;
+
+    @MockitoBean
     private TransferClient transferClient;
 
     @MockitoBean
@@ -46,6 +53,7 @@ public class UserControllerTest {
     @BeforeEach
     void setUp() {
         Mockito.reset(userClient);
+        Mockito.reset(blockerClient);
         Mockito.reset(transferClient);
         Mockito.reset(oAuth2Service);
     }
@@ -58,6 +66,7 @@ public class UserControllerTest {
     @Test
     @WithMockUser("userLogin")
     public void testChangePassword() {
+        doReturn(Mono.empty()).when(blockerClient).checkEditUserCash(any());
         webTestClient
                 .mutateWith(csrf())
                 .post()
@@ -75,6 +84,7 @@ public class UserControllerTest {
     @Test
     @WithMockUser("userLogin")
     public void testEditUserAccounts() {
+        doReturn(Mono.empty()).when(blockerClient).checkEditUserCash(any());
         webTestClient
                 .mutateWith(csrf())
                 .post()
@@ -91,6 +101,7 @@ public class UserControllerTest {
     @Test
     @WithMockUser("userLogin1")
     public void testTransfer() {
+        doReturn(Mono.empty()).when(blockerClient).checkEditUserCash(any());
         webTestClient
                 .mutateWith(csrf())
                 .post()

@@ -1,5 +1,6 @@
 package com.example.bankapp.ui.controller;
 
+import com.example.bankapp.ui.client.BlockerClient;
 import com.example.bankapp.ui.client.TransferClient;
 import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.model.EditPasswordRequestDto;
@@ -36,6 +37,7 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder;
     private final UserClient userClient;
+    private final BlockerClient blockerClient;
     private final TransferClient transferClient;
 
     @PostMapping("/{login}/editPassword")
@@ -163,7 +165,8 @@ public class UserController {
                             .value(form.getValue())
                             .action(form.getAction())
                             .build();
-                    return userClient.editUserCash(dto)
+                    return blockerClient.checkEditUserCash(dto)
+                            .then(userClient.editUserCash(dto))
                             .thenReturn("redirect:/main");
                 })
                 .onErrorResume(err -> {

@@ -1,5 +1,6 @@
 package com.example.bankapp.transfer.controller;
 
+import com.example.bankapp.transfer.client.BlockerClient;
 import com.example.bankapp.transfer.client.UserClient;
 import com.example.bankapp.transfer.configuration.SecurityConfig;
 import com.example.bankapp.transfer.model.AccountChangeRequestDto;
@@ -42,6 +43,9 @@ public class TransferControllerTest {
     private UserClient userClient;
 
     @MockitoBean
+    private BlockerClient blockerClient;
+
+    @MockitoBean
     private TransferService transferService;
 
     @MockitoBean
@@ -55,6 +59,7 @@ public class TransferControllerTest {
     void setUp() {
         Mockito.reset(transferService);
         Mockito.reset(userClient);
+        Mockito.reset(blockerClient);
     }
 
     @AfterEach
@@ -82,6 +87,7 @@ public class TransferControllerTest {
     public void testTransferWithAuth() {
         doReturn(Mono.just(List.of(AccountChangeRequestDto.builder().build()))).when(transferService).getChanges(anyString(), any());
         doReturn(Mono.empty()).when(userClient).transfer(any());
+        doReturn(Mono.empty()).when(blockerClient).checkTransfer(any());
 
         var dto = TransferRequestDto.builder()
                 .fromCurrency(Currency.RUB)

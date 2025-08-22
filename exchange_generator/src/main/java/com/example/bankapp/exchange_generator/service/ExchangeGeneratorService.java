@@ -17,13 +17,13 @@ import java.util.random.RandomGenerator;
 public class ExchangeGeneratorService {
 
     private final ExchangeClient exchangeClient;
+    private final RandomGenerator random;
 
     @Scheduled(fixedDelay = 1000)
     public void updateRates() {
-        var rnd = RandomGenerator.getDefault();
         var rates = List.of(
-                UpdateRateRequestDto.builder().currency(Currency.CNY).value(BigDecimal.valueOf(rnd.nextDouble(5, 15)).setScale(2, RoundingMode.HALF_UP)).build(),
-                UpdateRateRequestDto.builder().currency(Currency.USD).value(BigDecimal.valueOf(rnd.nextDouble(75, 85)).setScale(2, RoundingMode.HALF_UP)).build()
+                UpdateRateRequestDto.builder().currency(Currency.CNY).value(BigDecimal.valueOf(random.nextDouble(5, 15)).setScale(2, RoundingMode.HALF_UP)).build(),
+                UpdateRateRequestDto.builder().currency(Currency.USD).value(BigDecimal.valueOf(random.nextDouble(75, 85)).setScale(2, RoundingMode.HALF_UP)).build()
         );
         exchangeClient.updateRates(rates);
     }

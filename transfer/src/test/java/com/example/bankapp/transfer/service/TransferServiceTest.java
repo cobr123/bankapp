@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import static org.mockito.Mockito.doReturn;
@@ -95,7 +96,7 @@ public class TransferServiceTest {
 
                     assertThat(changes.getLast().getLogin()).isEqualTo(mary.getLogin());
                     assertThat(changes.getLast().getBefore()).isEqualTo(BigDecimal.ZERO);
-                    assertThat(changes.getLast().getAfter()).isEqualTo(BigDecimal.ONE);
+                    assertThat(changes.getLast().getAfter()).isEqualTo(BigDecimal.ONE.setScale(2, RoundingMode.HALF_UP));
                     assertThat(changes.getLast().getCurrency()).isEqualTo(Currency.USD);
                 })
                 .verifyComplete();
@@ -174,7 +175,7 @@ public class TransferServiceTest {
 
                     assertThat(changes.getLast().getLogin()).isEqualTo(mary.getLogin());
                     assertThat(changes.getLast().getBefore()).isEqualTo(BigDecimal.ZERO);
-                    assertThat(changes.getLast().getAfter()).isEqualTo(BigDecimal.valueOf(8));
+                    assertThat(changes.getLast().getAfter()).isEqualTo(BigDecimal.valueOf(8).setScale(2, RoundingMode.HALF_UP));
                     assertThat(changes.getLast().getCurrency()).isEqualTo(Currency.CNY);
                 })
                 .verifyComplete();

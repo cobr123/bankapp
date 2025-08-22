@@ -46,6 +46,7 @@ services:
       - spring.cloud.consul.config.import-check.enabled=false
       - USER_CLIENT_BASE_URL=http://gateway/accounts/
       - TRANSFER_CLIENT_BASE_URL=http://gateway/transfer/
+      - BLOCKER_CLIENT_BASE_URL=http://gateway/blocker/
 
   transfer:
     build:
@@ -58,6 +59,7 @@ services:
       - spring.cloud.consul.config.import-check.enabled=false
       - USER_CLIENT_BASE_URL=http://gateway/accounts/
       - EXCHANGE_CLIENT_BASE_URL=http://gateway/exchange/
+      - BLOCKER_CLIENT_BASE_URL=http://gateway/blocker/
     depends_on:
       - consul_server
       - keycloak
@@ -145,3 +147,16 @@ services:
       - POSTGRES_DB=exchange
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+
+  blocker:
+    build:
+      target: blocker
+    restart: unless-stopped
+    environment:
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloak:8080/realms/master
+      - spring.cloud.consul.host=consul_server
+      - spring.cloud.consul.port=8500
+      - spring.cloud.consul.config.import-check.enabled=false
+    depends_on:
+      - consul_server
+      - keycloak

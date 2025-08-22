@@ -1,0 +1,18 @@
+logging:
+  level:
+    root: WARN
+
+management:
+  endpoints.web.exposure.include: health
+
+spring:
+  application:
+    name: blocker
+  cloud:
+    consul:
+      config:
+        enabled: true            # Включаем Consul Config для внешней конфигурации
+        prefix: config           # Префикс в KV-хранилище Consul (по умолчанию "config")
+        defaultContext: application  # Контекст по умолчанию
+  jackson:
+    property-naming-strategy: SNAKE_CASE

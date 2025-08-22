@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class TransferService {
                     .map(RateResponseDto::getValue)
                     .orElseThrow();
             toValue = toValue
-                    .divide(rate, RoundingMode.DOWN);
+                    .divide(rate, MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
         }
         return toValue;
     }
