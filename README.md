@@ -25,6 +25,12 @@ helm upgrade --install --atomic keycloak ./helm_charts/charts/keycloak
 ```bash
 helm uninstall keycloak
 ```
+```bash
+helm upgrade --install --atomic notifications ./helm_charts/charts/notifications
+```
+```bash
+helm uninstall notifications
+```
 1. Проверка установки
 ```bash
 kubectl get pods
