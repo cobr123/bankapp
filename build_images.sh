@@ -12,4 +12,4 @@ docker build -t notifications:latest ./notifications
 docker build -t transfer:latest ./transfer
 docker build -t ui:latest ./ui
 
-echo "Docker images built successfully!" 
+echo "Docker images built successfully!"
