@@ -43,6 +43,12 @@ helm upgrade --install --atomic exchange-generator ./helm_charts/charts/exchange
 ```bash
 helm uninstall exchange-generator
 ```
+```bash
+helm upgrade --install --atomic ui ./helm_charts/charts/ui
+```
+```bash
+helm uninstall ui
+```
 1. Проверка установки
 ```bash
 kubectl get pods
