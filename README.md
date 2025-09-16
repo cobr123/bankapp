@@ -67,6 +67,15 @@ helm upgrade --install --atomic transfer ./helm_charts/charts/transfer
 ```bash
 helm uninstall transfer
 ```
+```bash
+helm dependency build ./helm_charts/charts/accounts
+```
+```bash
+helm upgrade --install --atomic accounts ./helm_charts/charts/accounts
+```
+```bash
+helm uninstall accounts
+```
 1. Проверка установки
 ```bash
 kubectl get pods

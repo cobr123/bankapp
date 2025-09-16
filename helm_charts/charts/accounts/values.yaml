@@ -1,0 +1,36 @@
+appName: accounts
+
+port: 8080
+
+namespace: default
+
+configmap:
+  name: accounts
+  data:
+    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: "http://keycloak.{{ .Values.namespace }}.svc.cluster.local:8080/realms/master"
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "http://keycloak.{{ .Values.namespace }}.svc.cluster.local:8080/realms/master"
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://accounts-postgresql-0.{{ .Values.namespace }}.svc.cluster.local:5432/accounts"
+    SPRING_DATASOURCE_USERNAME: root
+    SPRING_DATASOURCE_PASSWORD: root
+    SPRING_DATA_REDIS_HOST: "accounts-redis-master-0.{{ .Values.namespace }}.svc.cluster.local"
+    SPRING_DATA_REDIS_PORT: 6379
+    SPRING_CACHE_REDIS_TIME-TO-LIVE: PT5S
+    NOTIFICATIONS_CLIENT_BASE_URL: "http://notifications.{{ .Values.namespace }}.svc.cluster.local:8080"
+
+image:
+  name: accounts
+  tag: latest
+
+redis:
+  architecture: standalone
+
+postgresql:
+  auth:
+    database: accounts
+    username: root
+    # existingSecret: "{{ .Release.Name }}-order-db-postgresql"
+    password: root
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
