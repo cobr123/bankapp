@@ -1,0 +1,43 @@
+apiVersion: v2
+name: bankapp
+description: Umbrella chart for bankapp microservices
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+dependencies:
+  - name: keycloak
+    version: "0.1.0"
+    repository: "file://./charts/keycloak"
+
+  - name: ui
+    version: "0.1.0"
+    repository: "file://./charts/ui"
+
+  - name: accounts
+    version: "0.1.0"
+    repository: "file://./charts/accounts"
+
+  - name: transfer
+    version: "0.1.0"
+    repository: "file://./charts/transfer"
+
+  - name: exchange
+    version: "0.1.0"
+    repository: "file://./charts/exchange"
+
+  - name: exchange-generator
+    version: "0.1.0"
+    repository: "file://./charts/exchange-generator"
+
+  - name: blocker
+    version: "0.1.0"
+    repository: "file://./charts/blocker"
+
+  - name: notifications
+    version: "0.1.0"
+    repository: "file://./charts/notifications"
+
+  - name: cash
+    version: "0.1.0"
+    repository: "file://./charts/cash"

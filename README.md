@@ -85,6 +85,15 @@ helm upgrade --install --atomic exchange ./helm_charts/charts/exchange
 ```bash
 helm uninstall exchange
 ```
+```bash
+helm dependency build ./helm_charts
+```
+```bash
+helm upgrade --install --atomic bankapp ./helm_charts
+```
+```bash
+helm uninstall bankapp
+```
 1. Проверка установки
 ```bash
 kubectl get pods
@@ -93,6 +102,9 @@ kubectl get pods
 ```bash
 kubectl get svc
 kubectl get ingress
+```
+```bash
+helm ls --all-namespaces
 ```
 ```bash
 minikube image ls
