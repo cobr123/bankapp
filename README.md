@@ -31,6 +31,12 @@ helm upgrade --install --atomic notifications ./helm_charts/charts/notifications
 ```bash
 helm uninstall notifications
 ```
+```bash
+helm upgrade --install --atomic blocker ./helm_charts/charts/blocker
+```
+```bash
+helm uninstall blocker
+```
 1. Проверка установки
 ```bash
 kubectl get pods

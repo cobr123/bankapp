@@ -1,0 +1,14 @@
+appName: blocker
+
+port: 8080
+
+namespace: default
+
+configmap:
+  name: blocker
+  data:
+    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "http://keycloak.{{ .Values.namespace }}.svc.cluster.local:8080/realms/master"
+
+image:
+  name: blocker
+  tag: latest
