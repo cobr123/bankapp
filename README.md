@@ -49,6 +49,15 @@ helm upgrade --install --atomic ui ./helm_charts/charts/ui
 ```bash
 helm uninstall ui
 ```
+```bash
+helm dependency build ./helm_charts/charts/cash
+```
+```bash
+helm upgrade --install --atomic cash ./helm_charts/charts/cash
+```
+```bash
+helm uninstall cash
+```
 1. Проверка установки
 ```bash
 kubectl get pods
