@@ -1,0 +1,15 @@
+appName: exchange-generator
+
+port: 8080
+
+namespace: default
+
+configmap:
+  name: exchange-generator
+  data:
+    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: "http://keycloak.{{ .Values.namespace }}.svc.cluster.local:8080/realms/master"
+    EXCHANGE_CLIENT_BASE_URL: "http://exchange.{{ .Values.namespace }}.svc.cluster.local:8080"
+
+image:
+  name: exchange_generator
+  tag: latest

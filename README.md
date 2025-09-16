@@ -37,6 +37,12 @@ helm upgrade --install --atomic blocker ./helm_charts/charts/blocker
 ```bash
 helm uninstall blocker
 ```
+```bash
+helm upgrade --install --atomic exchange-generator ./helm_charts/charts/exchange-generator
+```
+```bash
+helm uninstall exchange-generator
+```
 1. Проверка установки
 ```bash
 kubectl get pods
