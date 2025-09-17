@@ -2,8 +2,6 @@ appName: cash
 
 port: 8080
 
-namespace: default
-
 configmap:
   name: cash
   data:

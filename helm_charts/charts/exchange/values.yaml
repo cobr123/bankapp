@@ -2,8 +2,6 @@ appName: exchange
 
 port: 8080
 
-namespace: default
-
 configmap:
   name: exchange
   data:

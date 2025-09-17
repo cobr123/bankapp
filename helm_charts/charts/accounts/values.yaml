@@ -2,8 +2,6 @@ appName: accounts
 
 port: 8080
 
-namespace: default
-
 configmap:
   name: accounts
   data:

@@ -2,8 +2,6 @@ appName: blocker
 
 port: 8080
 
-namespace: default
-
 configmap:
   name: blocker
   data:

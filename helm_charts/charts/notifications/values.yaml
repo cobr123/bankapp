@@ -2,8 +2,6 @@ appName: notifications
 
 port: 8080
 
-namespace: default
-
 configmap:
   name: notifications
   data:

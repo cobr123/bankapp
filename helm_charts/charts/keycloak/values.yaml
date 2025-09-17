@@ -2,8 +2,6 @@ appName: keycloak
 
 port: 8080
 
-namespace: default
-
 configmap:
   name: keycloak
 

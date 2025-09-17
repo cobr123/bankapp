@@ -94,9 +94,25 @@ helm upgrade --install --atomic bankapp ./helm_charts
 ```bash
 helm uninstall bankapp
 ```
+```bash
+kubectl create namespace test
+kubectl create namespace prod
+```
+```bash
+helm upgrade --install --atomic bankapp-test ./helm_charts -n test
+```
+```bash
+helm upgrade --install --atomic bankapp-prod ./helm_charts -n prod
+```
+```bash
+helm uninstall bankapp-test -n test
+```
+```bash
+helm uninstall bankapp-prod -n prod
+```
 1. Проверка установки
 ```bash
-kubectl get pods
+kubectl get pods --all-namespaces
 ``` 
 (дождаться пока все поды будут в состоянии Running)
 ```bash

@@ -2,8 +2,6 @@ appName: transfer
 
 port: 8080
 
-namespace: default
-
 configmap:
   name: transfer
   data:

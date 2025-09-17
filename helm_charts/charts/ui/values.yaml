@@ -2,8 +2,6 @@ appName: ui
 
 port: 8080
 
-namespace: default
-
 configmap:
   name: ui
   data:

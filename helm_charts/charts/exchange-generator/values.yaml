@@ -2,8 +2,6 @@ appName: exchange-generator
 
 port: 8080
 
-namespace: default
-
 configmap:
   name: exchange-generator
   data:
