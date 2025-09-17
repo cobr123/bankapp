@@ -1,130 +1,73 @@
-# Как запустить
+# Как запустить в Jenkins
 * ```docker compose up```
-* открыть в брауезере http://localhost:8080/
+* открываем в брауезере http://localhost:8888/
 
 # Как запустить локально вручную
-1.
+1. запускаем minikube
 ```bash
 minikube start
 ```
+2. собираем docker-образы
 ```bash
 chmod +x ./build_images.sh
 ```
 ```bash
 ./build_images.sh
 ```
+3. загружаем docker-образы в minikube
 ```bash
 chmod +x ./load_images.sh
 ```
 ```bash
 ./load_images.sh
 ```
+4. деплоим umbrella chart
 ```bash
-helm upgrade --install --atomic keycloak ./helm_charts/charts/keycloak
+helm install bankapp ./helm_charts
 ```
+5. добавляем перенаправление внутрь кластера
 ```bash
-helm uninstall keycloak
+kubectl --namespace default port-forward service/ui 8888:8080
 ```
-```bash
-helm upgrade --install --atomic notifications ./helm_charts/charts/notifications
-```
-```bash
-helm uninstall notifications
-```
-```bash
-helm upgrade --install --atomic blocker ./helm_charts/charts/blocker
-```
-```bash
-helm uninstall blocker
-```
-```bash
-helm upgrade --install --atomic exchange-generator ./helm_charts/charts/exchange-generator
-```
-```bash
-helm uninstall exchange-generator
-```
-```bash
-helm upgrade --install --atomic ui ./helm_charts/charts/ui
-```
-```bash
-helm uninstall ui
-```
-```bash
-helm dependency build ./helm_charts/charts/cash
-```
-```bash
-helm upgrade --install --atomic cash ./helm_charts/charts/cash
-```
-```bash
-helm uninstall cash
-```
-```bash
-helm dependency build ./helm_charts/charts/transfer
-```
-```bash
-helm upgrade --install --atomic transfer ./helm_charts/charts/transfer
-```
-```bash
-helm uninstall transfer
-```
-```bash
-helm dependency build ./helm_charts/charts/accounts
-```
-```bash
-helm upgrade --install --atomic accounts ./helm_charts/charts/accounts
-```
-```bash
-helm uninstall accounts
-```
-```bash
-helm dependency build ./helm_charts/charts/exchange
-```
-```bash
-helm upgrade --install --atomic exchange ./helm_charts/charts/exchange
-```
-```bash
-helm uninstall exchange
-```
-```bash
-helm dependency build ./helm_charts
-```
-```bash
-helm upgrade --install --atomic bankapp ./helm_charts
-```
+6. открываем в брауезере http://localhost:8888/
+7. деинсталируем umbrella chart
 ```bash
 helm uninstall bankapp
 ```
+
+# Как запустить локально вручную в другом namespace
+1. создаем namespace test
 ```bash
 kubectl create namespace test
-kubectl create namespace prod
 ```
+2. деплоим umbrella chart в namespace test
 ```bash
-helm upgrade --install --atomic bankapp-test ./helm_charts -n test
+helm install bankapp-test ./helm_charts -n test
 ```
+3. добавляем перенаправление внутрь кластера в namespace test
 ```bash
-helm upgrade --install --atomic bankapp-prod ./helm_charts -n prod
+kubectl --namespace test port-forward service/ui 8888:8080
 ```
+4. открываем в брауезере http://localhost:8888/
+5. деинсталируем umbrella chart из namespace test
 ```bash
 helm uninstall bankapp-test -n test
 ```
-```bash
-helm uninstall bankapp-prod -n prod
-```
-1. Проверка установки
+
+# Проверка установки
 ```bash
 kubectl get pods --all-namespaces
 ``` 
+Также можно посмотреть логи внутри пода
+```bash
+kubectl logs -f имя_пода
+```
 (дождаться пока все поды будут в состоянии Running)
 ```bash
 kubectl get svc
+kubectl get pods
 kubectl get ingress
 ```
 ```bash
-helm ls --all-namespaces
-```
-```bash
 minikube image ls
-```
-```bash
-minikube tunnel
 ```

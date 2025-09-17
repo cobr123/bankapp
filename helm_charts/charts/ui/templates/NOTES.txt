@@ -1,0 +1,1 @@
+kubectl --namespace {{ .Release.Namespace}} port-forward service/{{ .Values.appName }} 8888:8080
