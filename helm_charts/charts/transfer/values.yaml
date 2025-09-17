@@ -5,15 +5,15 @@ port: 8080
 configmap:
   name: transfer
   data:
-    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: "http://keycloak.{{ .Values.namespace }}.svc.cluster.local:8080/realms/master"
-    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "http://keycloak.{{ .Values.namespace }}.svc.cluster.local:8080/realms/master"
-    SPRING_DATASOURCE_URL: "jdbc:postgresql://transfer-postgresql-0.{{ .Values.namespace }}.svc.cluster.local:5432/transfer"
+    PROVIDER_KEYCLOAK_ISSUER_URL: "http://keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master"
+    RESOURCE_SERVER_JWT_ISSUER_URI: "http://keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master"
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://transfer-postgresql-0.{{ .Release.Namespace }}.svc.cluster.local:5432/transfer"
     SPRING_DATASOURCE_USERNAME: root
     SPRING_DATASOURCE_PASSWORD: root
-    USER_CLIENT_BASE_URL: "http://accounts.{{ .Values.namespace }}.svc.cluster.local:8080"
-    EXCHANGE_CLIENT_BASE_URL: "http://exchange.{{ .Values.namespace }}.svc.cluster.local:8080"
-    BLOCKER_CLIENT_BASE_URL: "http://blocker.{{ .Values.namespace }}.svc.cluster.local:8080"
-    NOTIFICATIONS_CLIENT_BASE_URL: "http://notifications.{{ .Values.namespace }}.svc.cluster.local:8080"
+    USER_CLIENT_BASE_URL: "http://accounts.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    EXCHANGE_CLIENT_BASE_URL: "http://exchange.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    BLOCKER_CLIENT_BASE_URL: "http://blocker.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    NOTIFICATIONS_CLIENT_BASE_URL: "http://notifications.{{ .Release.Namespace }}.svc.cluster.local:8080"
 
 image:
   name: transfer

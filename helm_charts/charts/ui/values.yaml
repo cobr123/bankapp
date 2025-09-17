@@ -5,10 +5,10 @@ port: 8080
 configmap:
   name: ui
   data:
-    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: "http://keycloak.{{ .Values.namespace }}.svc.cluster.local:8080/realms/master"
-    USER_CLIENT_BASE_URL: "http://accounts.{{ .Values.namespace }}.svc.cluster.local:8080"
-    TRANSFER_CLIENT_BASE_URL: "http://transfer.{{ .Values.namespace }}.svc.cluster.local:8080"
-    CASH_CLIENT_BASE_URL: "http://cash.{{ .Values.namespace }}.svc.cluster.local:8080"
+    PROVIDER_KEYCLOAK_ISSUER_URL: "http://keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master"
+    USER_CLIENT_BASE_URL: "http://accounts.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    TRANSFER_CLIENT_BASE_URL: "http://transfer.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    CASH_CLIENT_BASE_URL: "http://cash.{{ .Release.Namespace }}.svc.cluster.local:8080"
 
 image:
   name: ui

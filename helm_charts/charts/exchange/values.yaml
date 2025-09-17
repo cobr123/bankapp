@@ -5,13 +5,13 @@ port: 8080
 configmap:
   name: exchange
   data:
-    SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "http://keycloak.{{ .Values.namespace }}.svc.cluster.local:8080/realms/master"
-    SPRING_DATASOURCE_URL: "jdbc:postgresql://exchange-postgresql-0.{{ .Values.namespace }}.svc.cluster.local:5432/exchange"
+    RESOURCE_SERVER_JWT_ISSUER_URI: "http://keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master"
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://exchange-postgresql-0.{{ .Release.Namespace }}.svc.cluster.local:5432/exchange"
     SPRING_DATASOURCE_USERNAME: root
     SPRING_DATASOURCE_PASSWORD: root
-    SPRING_DATA_REDIS_HOST: "exchange-redis-master-0.{{ .Values.namespace }}.svc.cluster.local"
+    SPRING_DATA_REDIS_HOST: "exchange-redis-master-0.{{ .Release.Namespace }}.svc.cluster.local"
     SPRING_DATA_REDIS_PORT: 6379
-    SPRING_CACHE_REDIS_TIME-TO-LIVE: PT5S
+    SPRING_CACHE_REDIS_TIME_TO_LIVE: PT5S
 
 image:
   name: exchange
