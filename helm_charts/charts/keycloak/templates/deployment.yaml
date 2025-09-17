@@ -23,10 +23,3 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Values.configmap.name }}
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "50m"    # 50 milli cores (1/20 CPU)
-            limits:
-              memory: "512Mi" # 512 mebibytes
-              cpu: "100m"
