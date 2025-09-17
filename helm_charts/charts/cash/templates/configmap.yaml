@@ -2,3 +2,12 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: {{ .Values.configmap.name }}
+data:
+  spring.security.oauth2.client.provider.keycloak.issuer-uri: {{ tpl .Values.configmap.data.PROVIDER_KEYCLOAK_ISSUER_URL . | quote }}
+  spring.security.oauth2.resourceserver.jwt.issuer-uri: {{ tpl .Values.configmap.data.RESOURCE_SERVER_JWT_ISSUER_URI . | quote }}
+  SPRING_DATASOURCE_URL: {{ tpl .Values.configmap.data.SPRING_DATASOURCE_URL . | quote }}
+  SPRING_DATASOURCE_USERNAME: {{ .Values.configmap.data.SPRING_DATASOURCE_USERNAME | quote }}
+  SPRING_DATASOURCE_PASSWORD: {{ .Values.configmap.data.SPRING_DATASOURCE_PASSWORD | quote }}
+  USER_CLIENT_BASE_URL: {{ tpl .Values.configmap.data.USER_CLIENT_BASE_URL . | quote }}
+  BLOCKER_CLIENT_BASE_URL: {{ tpl .Values.configmap.data.BLOCKER_CLIENT_BASE_URL . | quote }}
+  NOTIFICATIONS_CLIENT_BASE_URL: {{ tpl .Values.configmap.data.NOTIFICATIONS_CLIENT_BASE_URL . | quote }}

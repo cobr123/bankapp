@@ -2,3 +2,8 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: {{ .Values.configmap.name }}
+data:
+  spring.security.oauth2.client.provider.keycloak.issuer-uri: {{ tpl .Values.configmap.data.PROVIDER_KEYCLOAK_ISSUER_URL . | quote }}
+  USER_CLIENT_BASE_URL: {{ tpl .Values.configmap.data.USER_CLIENT_BASE_URL . | quote }}
+  TRANSFER_CLIENT_BASE_URL: {{ tpl .Values.configmap.data.TRANSFER_CLIENT_BASE_URL . | quote }}
+  CASH_CLIENT_BASE_URL: {{ tpl .Values.configmap.data.CASH_CLIENT_BASE_URL . | quote }}
