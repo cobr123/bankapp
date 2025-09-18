@@ -7,12 +7,8 @@ pipeline {
 
     stages {
         stage('Build & Unit Tests') {
-            parallel {
-                stage('transfer service') {
-                    steps {
-                        sh 'gradle :transfer:clean :transfer:test'
-                    }
-                }
+            steps {
+                sh 'gradle :transfer:clean :transfer:test'
             }
         }
 

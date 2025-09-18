@@ -7,12 +7,8 @@ pipeline {
 
     stages {
         stage('Build & Unit Tests') {
-            parallel {
-                stage('ui service') {
-                    steps {
-                        sh 'gradle :ui:clean :ui:test'
-                    }
-                }
+            steps {
+                sh 'gradle :ui:clean :ui:test'
             }
         }
 

@@ -7,12 +7,8 @@ pipeline {
 
     stages {
         stage('Build & Unit Tests') {
-            parallel {
-                stage('cash service') {
-                    steps {
-                        sh 'gradle :cash:clean :cash:test'
-                    }
-                }
+            steps {
+                sh 'gradle :cash:clean :cash:test'
             }
         }
 

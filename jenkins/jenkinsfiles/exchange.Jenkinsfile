@@ -7,12 +7,8 @@ pipeline {
 
     stages {
         stage('Build & Unit Tests') {
-            parallel {
-                stage('exchange service') {
-                    steps {
-                        sh 'gradle :exchange:clean :exchange:test'
-                    }
-                }
+            steps {
+                sh 'gradle :exchange:clean :exchange:test'
             }
         }
 

@@ -7,10 +7,8 @@ pipeline {
 
     stages {
         stage('Build & Unit Tests') {
-            stage('bankapp service') {
-                steps {
-                    sh 'gradle clean test'
-                }
+            steps {
+                sh 'gradle clean test'
             }
         }
 

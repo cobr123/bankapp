@@ -7,12 +7,8 @@ pipeline {
 
     stages {
         stage('Build & Unit Tests') {
-            parallel {
-                stage('notifications service') {
-                    steps {
-                        sh 'gradle :notifications:clean :notifications:test'
-                    }
-                }
+            steps {
+                sh 'gradle :notifications:clean :notifications:test'
             }
         }
 

@@ -7,12 +7,8 @@ pipeline {
 
     stages {
         stage('Build & Unit Tests') {
-            parallel {
-                stage('blocker service') {
-                    steps {
-                        sh 'gradle :blocker:clean :blocker:test'
-                    }
-                }
+            steps {
+                sh 'gradle :blocker:clean :blocker:test'
             }
         }
 
