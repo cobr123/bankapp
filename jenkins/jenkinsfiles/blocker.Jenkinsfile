@@ -10,9 +10,7 @@ pipeline {
             parallel {
                 stage('blocker service') {
                     steps {
-                        dir('blocker') {
-                            sh 'gradle :blocker:clean :blocker:test'
-                        }
+                        sh 'gradle :blocker:clean :blocker:test'
                     }
                 }
             }

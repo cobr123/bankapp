@@ -10,9 +10,7 @@ pipeline {
             parallel {
                 stage('exchange_generator service') {
                     steps {
-                        dir('exchange_generator') {
-                            sh 'gradle :exchange_generator:clean :exchange_generator:test'
-                        }
+                        sh 'gradle :exchange_generator:clean :exchange_generator:test'
                     }
                 }
             }

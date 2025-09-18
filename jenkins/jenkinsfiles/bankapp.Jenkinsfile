@@ -7,62 +7,9 @@ pipeline {
 
     stages {
         stage('Build & Unit Tests') {
-            parallel {
-                stage('accounts service') {
-                    steps {
-                        dir('accounts') {
-                            sh 'gradle clean test'
-                        }
-                    }
-                }
-                stage('blocker service') {
-                    steps {
-                        dir('blocker') {
-                            sh 'gradle clean test'
-                        }
-                    }
-                }
-                stage('cash service') {
-                    steps {
-                        dir('cash') {
-                            sh 'gradle clean test'
-                        }
-                    }
-                }
-                stage('exchange service') {
-                    steps {
-                        dir('exchange') {
-                            sh 'gradle clean test'
-                        }
-                    }
-                }
-                stage('exchange_generator service') {
-                    steps {
-                        dir('exchange_generator') {
-                            sh 'gradle clean test'
-                        }
-                    }
-                }
-                stage('notifications service') {
-                    steps {
-                        dir('notifications') {
-                            sh 'gradle clean test'
-                        }
-                    }
-                }
-                stage('transfer service') {
-                    steps {
-                        dir('transfer') {
-                            sh 'gradle clean test'
-                        }
-                    }
-                }
-                stage('ui service') {
-                    steps {
-                        dir('ui') {
-                            sh 'gradle clean test'
-                        }
-                    }
+            stage('bankapp service') {
+                steps {
+                    sh 'gradle clean test'
                 }
             }
         }

@@ -10,9 +10,7 @@ pipeline {
             parallel {
                 stage('ui service') {
                     steps {
-                        dir('ui') {
-                            sh 'gradle :ui:clean :ui:test'
-                        }
+                        sh 'gradle :ui:clean :ui:test'
                     }
                 }
             }

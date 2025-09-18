@@ -10,9 +10,7 @@ pipeline {
             parallel {
                 stage('notifications service') {
                     steps {
-                        dir('notifications') {
-                            sh 'gradle :notifications:clean :notifications:test'
-                        }
+                        sh 'gradle :notifications:clean :notifications:test'
                     }
                 }
             }

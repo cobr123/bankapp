@@ -10,9 +10,7 @@ pipeline {
             parallel {
                 stage('transfer service') {
                     steps {
-                        dir('transfer') {
-                            sh 'gradle :transfer:clean :transfer:test'
-                        }
+                        sh 'gradle :transfer:clean :transfer:test'
                     }
                 }
             }

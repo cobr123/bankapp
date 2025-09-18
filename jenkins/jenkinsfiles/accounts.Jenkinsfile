@@ -10,9 +10,7 @@ pipeline {
             parallel {
                 stage('accounts service') {
                     steps {
-                        dir('accounts') {
-                            sh 'gradle :accounts:clean :accounts:test'
-                        }
+                        sh 'gradle :accounts:clean :accounts:test'
                     }
                 }
             }

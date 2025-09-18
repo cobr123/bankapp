@@ -10,9 +10,7 @@ pipeline {
             parallel {
                 stage('cash service') {
                     steps {
-                        dir('cash') {
-                            sh 'gradle :cash:clean :cash:test'
-                        }
+                        sh 'gradle :cash:clean :cash:test'
                     }
                 }
             }
