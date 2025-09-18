@@ -1,6 +1,11 @@
 # Как запустить в Jenkins
-* ```docker compose up```
-* открываем в брауезере http://localhost:8888/
+1. включаем Kubernetes в Docker Desktop (настройка → Kubernetes → Enable Kubernetes)
+2. запускаем jenkins в докере
+```bash
+docker compose -f ./jenkins/docker-compose.yml up
+```
+3. подтверждаем деплой для `bankapp` http://localhost:8080/
+4. открываем в брауезере http://localhost:8888/
 
 # Как запустить локально вручную
 1. запускаем minikube
@@ -42,7 +47,7 @@ kubectl create namespace test
 ```
 2. деплоим umbrella chart в namespace test
 ```bash
-helm install bankapp-test ./helm_charts -n test
+helm install bankapp ./helm_charts -n test
 ```
 3. добавляем перенаправление внутрь кластера в namespace test
 ```bash
@@ -51,7 +56,7 @@ kubectl --namespace test port-forward service/ui 8888:8080
 4. открываем в брауезере http://localhost:8888/
 5. деинсталируем umbrella chart из namespace test
 ```bash
-helm uninstall bankapp-test -n test
+helm uninstall bankapp -n test
 ```
 
 # Проверка установки

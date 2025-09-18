@@ -1,0 +1,112 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_TAG       = "latest"
+    }
+
+    stages {
+        stage('Build & Unit Tests') {
+            parallel {
+                stage('accounts service') {
+                    steps {
+                        dir('accounts') {
+                            sh 'gradle clean test'
+                        }
+                    }
+                }
+                stage('blocker service') {
+                    steps {
+                        dir('blocker') {
+                            sh 'gradle clean test'
+                        }
+                    }
+                }
+                stage('cash service') {
+                    steps {
+                        dir('cash') {
+                            sh 'gradle clean test'
+                        }
+                    }
+                }
+                stage('exchange service') {
+                    steps {
+                        dir('exchange') {
+                            sh 'gradle clean test'
+                        }
+                    }
+                }
+                stage('exchange_generator service') {
+                    steps {
+                        dir('exchange_generator') {
+                            sh 'gradle clean test'
+                        }
+                    }
+                }
+                stage('notifications service') {
+                    steps {
+                        dir('notifications') {
+                            sh 'gradle clean test'
+                        }
+                    }
+                }
+                stage('transfer service') {
+                    steps {
+                        dir('transfer') {
+                            sh 'gradle clean test'
+                        }
+                    }
+                }
+                stage('ui service') {
+                    steps {
+                        dir('ui') {
+                            sh 'gradle clean test'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Images') {
+            steps {
+                sh """
+                docker build -t accounts:${IMAGE_TAG} accounts
+                docker build -t blocker:${IMAGE_TAG} blocker
+                docker build -t cash:${IMAGE_TAG} cash
+                docker build -t exchange:${IMAGE_TAG} exchange
+                docker build -t exchange_generator:${IMAGE_TAG} exchange_generator
+                docker build -t notifications:${IMAGE_TAG} notifications
+                docker build -t transfer:${IMAGE_TAG} transfer
+                docker build -t ui:${IMAGE_TAG} ui
+                docker build -t keycloak:${IMAGE_TAG} keycloak
+                """
+            }
+        }
+
+        stage('Helm Deploy to TEST') {
+            steps {
+                sh """
+                helm upgrade --install bankapp ./helm_charts \\
+                  --namespace test --create-namespace \\
+                  --set image.tag=${IMAGE_TAG}
+                """
+            }
+        }
+
+        stage('Manual Approval for PROD') {
+            steps {
+                input message: 'Deploy to PROD environment?', ok: 'Yes, deploy'
+            }
+        }
+
+        stage('Helm Deploy to PROD') {
+            steps {
+                sh """
+                helm upgrade --install bankapp ./helm_charts \\
+                  --namespace prod --create-namespace \\
+                  --set image.tag=${IMAGE_TAG}
+                """
+            }
+        }
+    }
+}
