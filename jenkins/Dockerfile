@@ -5,13 +5,19 @@ USER root
 # Установка зависимостей
 RUN apt-get update && apt-get install -y \
     git \
-    gradle \
     curl \
     unzip \
     ca-certificates \
     gnupg \
     lsb-release \
     && rm -rf /var/lib/apt/lists/*
+
+# Установка Gradle
+ENV GRADLE_VERSION="9.0"
+RUN curl -L https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -o gradle.zip && \
+    unzip gradle.zip -d /opt/gradle && \
+    rm gradle.zip
+ENV PATH="/opt/gradle/gradle-${GRADLE_VERSION}/bin:${PATH}"
 
 # Установка Helm
 RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash

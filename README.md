@@ -1,11 +1,12 @@
 # Как запустить в Jenkins
 1. включаем Kubernetes в Docker Desktop (настройка → Kubernetes → Enable Kubernetes)
-2. запускаем jenkins в докере
+2. в файле jenkins/.env укажите GITHUB_TOKEN чтобы не ждать лимиты на запросы
+3. запускаем jenkins в докере
 ```bash
 docker compose -f ./jenkins/docker-compose.yml up
 ```
-3. подтверждаем деплой для `bankapp` http://localhost:8080/
-4. открываем в брауезере http://localhost:8888/
+4. подтверждаем деплой для `bankapp` http://localhost:8080/
+5. открываем в брауезере http://localhost:8888/
 
 # Как запустить локально вручную
 1. запускаем minikube
