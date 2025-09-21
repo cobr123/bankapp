@@ -25,6 +25,10 @@ docker compose -f ./jenkins/docker-compose.yml up
 kubectl --namespace test port-forward service/ui 8888:8080
 ```
 6. открываем в брауезере http://localhost:8888/
+7. удаляем namespace test вместе с umbrella chart и отдельными модулями
+```bash
+kubectl delete ns test
+```
 
 # Как запустить локально вручную
 1. включаем Kubernetes в Docker Desktop (настройка → Kubernetes → Enable Kubernetes)
