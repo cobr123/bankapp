@@ -1,12 +1,29 @@
 # Как запустить в Jenkins
 1. включаем Kubernetes в Docker Desktop (настройка → Kubernetes → Enable Kubernetes)
-2. в файле jenkins/.env укажите GITHUB_TOKEN чтобы не ждать лимиты на запросы
-3. запускаем jenkins в докере
+2. Создайте файл `jenkins_kubeconfig.yaml`. Jenkins будет использовать этот файл для доступа к Kubernetes.
+```bash
+kubectl config view --flatten --minify > jenkins_kubeconfig.yaml
+```
+Затем отредактируйте файл:
+**Замените `server: https://127.0.0.1:6443` на:**
+```yaml
+server: https://host.docker.internal:6443
+```
+**Добавьте:**
+```yaml
+insecure-skip-tls-verify: true
+```
+Это нужно, чтобы Jenkins внутри контейнера смог обратиться к вашему локальному кластеру и проигнорировал самоподписанные сертификаты.
+3. в файле jenkins/.env укажите GITHUB_TOKEN чтобы не ждать лимиты на запросы
+4. запускаем jenkins в докере
 ```bash
 docker compose -f ./jenkins/docker-compose.yml up
 ```
-4. подтверждаем деплой для `bankapp` http://localhost:8080/
-5. открываем в брауезере http://localhost:8888/
+5. добавляем перенаправление внутрь кластера
+```bash
+kubectl --namespace test port-forward service/ui 8888:8080
+```
+6. открываем в брауезере http://localhost:8888/
 
 # Как запустить локально вручную
 1. запускаем minikube
@@ -27,16 +44,20 @@ chmod +x ./load_images.sh
 ```bash
 ./load_images.sh
 ```
-4. деплоим umbrella chart
+4. собираем зависимости umbrella chart
+```bash
+helm dependency build ./helm_charts
+```
+5. деплоим umbrella chart
 ```bash
 helm install bankapp ./helm_charts
 ```
-5. добавляем перенаправление внутрь кластера
+6. добавляем перенаправление внутрь кластера
 ```bash
 kubectl --namespace default port-forward service/ui 8888:8080
 ```
-6. открываем в брауезере http://localhost:8888/
-7. деинсталируем umbrella chart
+7. открываем в брауезере http://localhost:8888/
+8. деинсталируем umbrella chart
 ```bash
 helm uninstall bankapp
 ```

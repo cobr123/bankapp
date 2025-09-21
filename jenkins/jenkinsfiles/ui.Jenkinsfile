@@ -23,6 +23,9 @@ pipeline {
         stage('Helm Deploy to TEST') {
             steps {
                 sh """
+                helm dependency build ./helm_charts/charts/ui
+                """
+                sh """
                 helm upgrade --install ui ./helm_charts/charts/ui \\
                   --namespace test --create-namespace \\
                   --set image.tag=${IMAGE_TAG}
@@ -38,6 +41,9 @@ pipeline {
 
         stage('Helm Deploy to PROD') {
             steps {
+                sh """
+                helm dependency build ./helm_charts/charts/ui
+                """
                 sh """
                 helm upgrade --install ui ./helm_charts/charts/ui \\
                   --namespace prod --create-namespace \\
