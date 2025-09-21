@@ -11,5 +11,6 @@ docker build -t exchange_generator:latest ./exchange_generator
 docker build -t notifications:latest ./notifications
 docker build -t transfer:latest ./transfer
 docker build -t ui:latest ./ui
+docker build -t keycloak:latest ./keycloak
 
 echo "Docker images built successfully!"
