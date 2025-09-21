@@ -10,7 +10,7 @@ configmap:
     SPRING_DATASOURCE_URL: "jdbc:postgresql://accounts-postgresql-hl.{{ .Release.Namespace }}.svc.cluster.local:5432/accounts"
     SPRING_DATASOURCE_USERNAME: root
     SPRING_DATASOURCE_PASSWORD: root
-    SPRING_DATA_REDIS_HOST: "accounts-redis-master-0.{{ .Release.Namespace }}.svc.cluster.local"
+    SPRING_DATA_REDIS_HOST: "accounts-redis-master.{{ .Release.Namespace }}.svc.cluster.local"
     SPRING_DATA_REDIS_PORT: 6379
     SPRING_CACHE_REDIS_TIME_TO_LIVE: PT5S
     NOTIFICATIONS_CLIENT_BASE_URL: "http://notifications.{{ .Release.Namespace }}.svc.cluster.local:8080"
@@ -21,6 +21,8 @@ image:
 
 redis:
   architecture: standalone
+  auth:
+    enabled: false
 
 postgresql:
   auth:
