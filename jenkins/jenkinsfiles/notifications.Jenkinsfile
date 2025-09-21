@@ -33,23 +33,23 @@ pipeline {
             }
         }
 
-        stage('Manual Approval for PROD') {
-            steps {
-                input message: 'Deploy to PROD environment?', ok: 'Yes, deploy'
-            }
-        }
-
-        stage('Helm Deploy to PROD') {
-            steps {
-                sh """
-                helm dependency build ./helm_charts/charts/notifications
-                """
-                sh """
-                helm upgrade --install notifications ./helm_charts/charts/notifications \\
-                  --namespace prod --create-namespace \\
-                  --set image.tag=${IMAGE_TAG}
-                """
-            }
-        }
+//         stage('Manual Approval for PROD') {
+//             steps {
+//                 input message: 'Deploy to PROD environment?', ok: 'Yes, deploy'
+//             }
+//         }
+//
+//         stage('Helm Deploy to PROD') {
+//             steps {
+//                 sh """
+//                 helm dependency build ./helm_charts/charts/notifications
+//                 """
+//                 sh """
+//                 helm upgrade --install notifications ./helm_charts/charts/notifications \\
+//                   --namespace prod --create-namespace \\
+//                   --set image.tag=${IMAGE_TAG}
+//                 """
+//             }
+//         }
     }
 }
