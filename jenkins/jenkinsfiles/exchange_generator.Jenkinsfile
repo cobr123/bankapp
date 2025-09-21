@@ -23,10 +23,10 @@ pipeline {
         stage('Helm Deploy to TEST') {
             steps {
                 sh """
-                helm dependency build ./helm_charts/charts/exchange_generator
+                helm dependency build ./helm_charts/charts/exchange-generator
                 """
                 sh """
-                helm upgrade --install exchange_generator ./helm_charts/charts/exchange_generator \\
+                helm upgrade --install exchange-generator ./helm_charts/charts/exchange-generator \\
                   --namespace test --create-namespace \\
                   --set image.tag=${IMAGE_TAG}
                 """
@@ -42,10 +42,10 @@ pipeline {
         stage('Helm Deploy to PROD') {
             steps {
                 sh """
-                helm dependency build ./helm_charts/charts/exchange_generator
+                helm dependency build ./helm_charts/charts/exchange-generator
                 """
                 sh """
-                helm upgrade --install exchange_generator ./helm_charts/charts/exchange_generator \\
+                helm upgrade --install exchange-generator ./helm_charts/charts/exchange-generator \\
                   --namespace prod --create-namespace \\
                   --set image.tag=${IMAGE_TAG}
                 """
