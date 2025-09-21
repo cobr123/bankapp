@@ -14,6 +14,7 @@ server: https://host.docker.internal:6443
 insecure-skip-tls-verify: true
 ```
 Это нужно, чтобы Jenkins внутри контейнера смог обратиться к вашему локальному кластеру и проигнорировал самоподписанные сертификаты.
+
 3. в файле jenkins/.env укажите GITHUB_TOKEN чтобы не ждать лимиты на запросы
 4. запускаем jenkins в докере
 ```bash
@@ -26,10 +27,7 @@ kubectl --namespace test port-forward service/ui 8888:8080
 6. открываем в брауезере http://localhost:8888/
 
 # Как запустить локально вручную
-1. запускаем minikube
-```bash
-minikube start
-```
+1. включаем Kubernetes в Docker Desktop (настройка → Kubernetes → Enable Kubernetes)
 2. собираем docker-образы
 ```bash
 chmod +x ./build_images.sh
@@ -37,27 +35,20 @@ chmod +x ./build_images.sh
 ```bash
 ./build_images.sh
 ```
-3. загружаем docker-образы в minikube
-```bash
-chmod +x ./load_images.sh
-```
-```bash
-./load_images.sh
-```
-4. собираем зависимости umbrella chart
+3. собираем зависимости umbrella chart
 ```bash
 helm dependency build ./helm_charts
 ```
-5. деплоим umbrella chart
+4. деплоим umbrella chart
 ```bash
 helm install bankapp ./helm_charts
 ```
-6. добавляем перенаправление внутрь кластера
+5. добавляем перенаправление внутрь кластера
 ```bash
 kubectl --namespace default port-forward service/ui 8888:8080
 ```
-7. открываем в брауезере http://localhost:8888/
-8. деинсталируем umbrella chart
+6. открываем в брауезере http://localhost:8888/
+7. деинсталируем umbrella chart
 ```bash
 helm uninstall bankapp
 ```
@@ -94,7 +85,4 @@ kubectl logs -f имя_пода
 kubectl get svc
 kubectl get pods
 kubectl get ingress
-```
-```bash
-minikube image ls
 ```
