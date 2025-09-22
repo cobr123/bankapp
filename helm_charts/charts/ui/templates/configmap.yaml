@@ -7,3 +7,4 @@ data:
   USER_CLIENT_BASE_URL: {{ tpl .Values.configmap.data.USER_CLIENT_BASE_URL . | quote }}
   TRANSFER_CLIENT_BASE_URL: {{ tpl .Values.configmap.data.TRANSFER_CLIENT_BASE_URL . | quote }}
   CASH_CLIENT_BASE_URL: {{ tpl .Values.configmap.data.CASH_CLIENT_BASE_URL . | quote }}
+  EXCHANGE_CLIENT_BASE_URL: {{ tpl .Values.configmap.data.EXCHANGE_CLIENT_BASE_URL . | quote }}

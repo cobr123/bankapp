@@ -14,6 +14,9 @@ transfer-client:
 cash-client:
   base-url: ${CASH_CLIENT_BASE_URL}
 
+exchange-client:
+  base-url: ${EXCHANGE_CLIENT_BASE_URL}
+
 spring:
   application:
     name: ui

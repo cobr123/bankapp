@@ -9,6 +9,7 @@ configmap:
     USER_CLIENT_BASE_URL: "http://accounts.{{ .Release.Namespace }}.svc.cluster.local:8080"
     TRANSFER_CLIENT_BASE_URL: "http://transfer.{{ .Release.Namespace }}.svc.cluster.local:8080"
     CASH_CLIENT_BASE_URL: "http://cash.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    EXCHANGE_CLIENT_BASE_URL: "http://exchange.{{ .Release.Namespace }}.svc.cluster.local:8080"
 
 image:
   name: ui

@@ -52,12 +52,21 @@ public class RateControllerTest {
     }
 
     @Test
-    public void testGetAll() throws Exception {
+    @WithMockUser
+    public void testGetAllWithAuth() throws Exception {
         when(rateService.findAll()).thenReturn(List.of(Rate.builder().currency(Currency.RUB).build()));
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("RUB"));
+    }
+
+    @Test
+    public void testGetAllNoAuth() throws Exception {
+        when(rateService.findAll()).thenReturn(List.of(Rate.builder().currency(Currency.RUB).build()));
+
+        mockMvc.perform(get("/"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
