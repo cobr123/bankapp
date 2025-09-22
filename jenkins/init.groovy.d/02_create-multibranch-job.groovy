@@ -55,7 +55,9 @@ jobNames.eachWithIndex { jobName, idx ->
 
         instance.add(mbp, jobName)
         mbp.save()
-        mbp.scheduleBuild2(60 * idx)
+        if ("bankapp".equals(jobName)) {
+            mbp.scheduleBuild2(0)
+        }
 
         println "--> Multibranch job '${jobName}' создан и запущен на '${githubRepo}'"
     }

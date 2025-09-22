@@ -33,23 +33,5 @@ pipeline {
             }
         }
 
-//         stage('Manual Approval for PROD') {
-//             steps {
-//                 input message: 'Deploy to PROD environment?', ok: 'Yes, deploy'
-//             }
-//         }
-//
-//         stage('Helm Deploy to PROD') {
-//             steps {
-//                 sh """
-//                 helm dependency build ./helm_charts/charts/exchange-generator
-//                 """
-//                 sh """
-//                 helm upgrade --install exchange-generator ./helm_charts/charts/exchange-generator \\
-//                   --namespace prod --create-namespace \\
-//                   --set image.tag=${IMAGE_TAG}
-//                 """
-//             }
-//         }
     }
 }

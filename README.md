@@ -62,16 +62,20 @@ helm uninstall bankapp
 ```bash
 kubectl create namespace test
 ```
-2. деплоим umbrella chart в namespace test
+2. собираем зависимости umbrella chart
+```bash
+helm dependency build ./helm_charts
+```
+3. деплоим umbrella chart в namespace test
 ```bash
 helm install bankapp ./helm_charts -n test
 ```
-3. добавляем перенаправление внутрь кластера в namespace test
+4. добавляем перенаправление внутрь кластера в namespace test
 ```bash
 kubectl --namespace test port-forward service/ui 8888:8080
 ```
-4. открываем в брауезере http://localhost:8888/
-5. деинсталируем umbrella chart из namespace test
+5. открываем в брауезере http://localhost:8888/
+6. деинсталируем umbrella chart из namespace test
 ```bash
 helm uninstall bankapp -n test
 ```
