@@ -7,6 +7,10 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "email", ignore = true)
     User toEntity(RegisterUserRequestDto dto);
+
+    @Mapping(target = "balance", ignore = true)
+    @Mapping(target = "accounts", ignore = true)
     UserResponseDto toDto(User user);
 } 
