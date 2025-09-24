@@ -7,6 +7,7 @@ services:
       - .env
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
     ports:
       - "9090:8080"
       - "50000:50000"
