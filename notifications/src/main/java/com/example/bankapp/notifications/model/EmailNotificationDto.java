@@ -1,12 +1,11 @@
 package com.example.bankapp.notifications.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 @Builder
 @ToString
 public class EmailNotificationDto {

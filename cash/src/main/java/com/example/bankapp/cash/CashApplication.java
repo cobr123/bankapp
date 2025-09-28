@@ -1,7 +1,6 @@
 package com.example.bankapp.cash;
 
 import com.example.bankapp.cash.configuration.BlockerClientProperties;
-import com.example.bankapp.cash.configuration.NotificationsClientProperties;
 import com.example.bankapp.cash.configuration.UserClientProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +15,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.web.client.RestClient;
 
 @SpringBootApplication
-@EnableConfigurationProperties({NotificationsClientProperties.class, BlockerClientProperties.class, UserClientProperties.class})
+@EnableConfigurationProperties({BlockerClientProperties.class, UserClientProperties.class})
 @EnableScheduling
 public class CashApplication {
 

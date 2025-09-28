@@ -11,9 +11,6 @@ user-client:
 blocker-client:
   base-url: ${BLOCKER_CLIENT_BASE_URL}
 
-notifications-client:
-  base-url: ${NOTIFICATIONS_CLIENT_BASE_URL}
-
 spring:
   application:
     name: cash
@@ -40,3 +37,10 @@ spring:
             clientAuthenticationMethod: client_secret_post # Способ передачи секрета
   jackson:
     property-naming-strategy: SNAKE_CASE
+  kafka:
+    admin:
+      fail-fast: true
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties.spring.json.add.type.headers: false

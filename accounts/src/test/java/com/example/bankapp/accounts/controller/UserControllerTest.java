@@ -15,8 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -59,11 +57,6 @@ public class UserControllerTest {
 
     @MockitoBean
     private UserMapper userMapper;
-
-    @MockitoBean
-    private ClientRegistrationRepository clientRegistrationRepository;
-    @MockitoBean
-    private OAuth2AuthorizedClientService authorizedClientService;
 
     @BeforeEach
     void setUp() {

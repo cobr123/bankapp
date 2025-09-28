@@ -5,7 +5,7 @@ port: 8080
 configmap:
   name: notifications
   data:
-    RESOURCE_SERVER_JWT_ISSUER_URI: "http://keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master"
+    KAFKA_BOOTSTRAP_SERVERS: "kafka.{{ .Release.Namespace }}.svc.cluster.local:9092"
 
 image:
   name: notifications

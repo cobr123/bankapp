@@ -13,7 +13,7 @@ configmap:
     USER_CLIENT_BASE_URL: "http://accounts.{{ .Release.Namespace }}.svc.cluster.local:8080"
     EXCHANGE_CLIENT_BASE_URL: "http://exchange.{{ .Release.Namespace }}.svc.cluster.local:8080"
     BLOCKER_CLIENT_BASE_URL: "http://blocker.{{ .Release.Namespace }}.svc.cluster.local:8080"
-    NOTIFICATIONS_CLIENT_BASE_URL: "http://notifications.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    KAFKA_BOOTSTRAP_SERVERS: "kafka.{{ .Release.Namespace }}.svc.cluster.local:9092"
 
 image:
   name: transfer
