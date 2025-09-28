@@ -31,6 +31,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.security:spring-security-oauth2-jose")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.kafka:spring-kafka")
 
     implementation("org.liquibase:liquibase-core:4.25.1")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

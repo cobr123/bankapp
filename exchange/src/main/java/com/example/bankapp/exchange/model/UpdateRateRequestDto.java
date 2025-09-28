@@ -1,13 +1,13 @@
 package com.example.bankapp.exchange.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 @Builder
 public class UpdateRateRequestDto {
     private Currency currency;

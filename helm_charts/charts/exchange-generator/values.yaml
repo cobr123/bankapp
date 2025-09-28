@@ -5,8 +5,7 @@ port: 8080
 configmap:
   name: exchange-generator
   data:
-    PROVIDER_KEYCLOAK_ISSUER_URL: "http://keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master"
-    EXCHANGE_CLIENT_BASE_URL: "http://exchange.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    KAFKA_BOOTSTRAP_SERVERS: "kafka.{{ .Release.Namespace }}.svc.cluster.local:9092"
 
 image:
   name: exchange_generator

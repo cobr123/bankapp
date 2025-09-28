@@ -22,3 +22,12 @@ spring:
     show-sql: true
   jackson:
     property-naming-strategy: SNAKE_CASE
+  kafka:
+    listener.ack-mode: manual
+    consumer:
+      group-id: exchange-kafka-client
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties.spring.json.value.default.type: com.example.bankapp.exchange.model.UpdateRateRequestDto
+      auto-offset-reset: latest
+      enable-auto-commit: false

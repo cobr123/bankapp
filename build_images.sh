@@ -12,5 +12,6 @@ docker build -t notifications:latest ./notifications
 docker build -t transfer:latest ./transfer
 docker build -t ui:latest ./ui
 docker build -t keycloak:latest ./keycloak
+docker build -t kafka:latest ./kafka
 
 echo "Docker images built successfully!"

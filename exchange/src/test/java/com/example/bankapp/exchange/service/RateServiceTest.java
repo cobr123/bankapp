@@ -15,7 +15,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 
 @RunWith(SpringRunner.class)
@@ -37,11 +36,11 @@ public class RateServiceTest extends ExchangeApplicationTests {
     }
 
     @Test
-    public void testUpdateAll() {
+    public void testUpdate() {
         var rate = Rate.builder()
                 .currency(Currency.RUB)
                 .value(BigDecimal.ONE)
                 .build();
-        rateService.updateAll(List.of(rate));
+        rateService.update(rate);
     }
 }

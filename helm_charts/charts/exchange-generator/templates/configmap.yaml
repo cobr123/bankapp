@@ -3,5 +3,4 @@ apiVersion: v1
 metadata:
   name: {{ .Values.configmap.name }}
 data:
-  spring.security.oauth2.client.provider.keycloak.issuer-uri: {{ tpl .Values.configmap.data.PROVIDER_KEYCLOAK_ISSUER_URL . | quote }}
-  EXCHANGE_CLIENT_BASE_URL: {{ tpl .Values.configmap.data.EXCHANGE_CLIENT_BASE_URL . | quote }}
+  spring.kafka.bootstrap-servers: {{ tpl .Values.configmap.data.KAFKA_BOOTSTRAP_SERVERS . | quote }}

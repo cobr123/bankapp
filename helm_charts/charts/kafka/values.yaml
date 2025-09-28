@@ -1,0 +1,12 @@
+appName: kafka
+
+port: 9092
+
+configmap:
+  name: kafka
+  data:
+    KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka.{{ .Release.Namespace }}.svc.cluster.local:9092"
+
+image:
+  name: kafka
+  tag: latest

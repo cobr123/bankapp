@@ -11,7 +11,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -23,7 +22,6 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -66,28 +64,6 @@ public class RateControllerTest {
         when(rateService.findAll()).thenReturn(List.of(Rate.builder().currency(Currency.RUB).build()));
 
         mockMvc.perform(get("/"))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @WithMockUser
-    public void testPostWithAuth() throws Exception {
-        String requestBody = "[{\"currency\": \"RUB\", \"value\": \"1\"}]";
-        mockMvc.perform(post("/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
-                )
-                .andExpect(status().isCreated());
-    }
-
-    @Test
-    public void testPostNoAuth() throws Exception {
-        String requestBody = "[{\"currency\": \"RUB\", \"value\": \"1\"}]";
-
-        mockMvc.perform(post("/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
-                )
                 .andExpect(status().isUnauthorized());
     }
 

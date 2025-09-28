@@ -39,7 +39,7 @@ source.setTraits([
 def branchSource = new BranchSource(source)
 branchSource.setStrategy(new DefaultBranchPropertyStrategy([] as BranchProperty[]))
 
-def jobNames = ["bankapp", "keycloak", "accounts", "blocker", "cash", "exchange", "exchange_generator", "notifications", "transfer", "ui"]
+def jobNames = ["bankapp", "keycloak", "accounts", "blocker", "cash", "exchange", "exchange_generator", "notifications", "transfer", "ui", "kafka"]
 jobNames.eachWithIndex { jobName, idx ->
     // Проверка, существует ли уже такой job
     if (instance.getItem(jobName) != null) {
@@ -57,8 +57,9 @@ jobNames.eachWithIndex { jobName, idx ->
         mbp.save()
         if ("bankapp".equals(jobName)) {
             mbp.scheduleBuild2(0)
+            println "--> Multibranch job '${jobName}' создан и запущен на '${githubRepo}'"
+        } else {
+            println "--> Multibranch job '${jobName}' создан"
         }
-
-        println "--> Multibranch job '${jobName}' создан и запущен на '${githubRepo}'"
     }
 }
