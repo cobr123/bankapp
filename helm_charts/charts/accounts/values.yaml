@@ -7,7 +7,7 @@ configmap:
   data:
     PROVIDER_KEYCLOAK_ISSUER_URL: "http://keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master"
     RESOURCE_SERVER_JWT_ISSUER_URI: "http://keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master"
-    SPRING_DATASOURCE_URL: "jdbc:postgresql://accounts-postgresql-hl.{{ .Release.Namespace }}.svc.cluster.local:5432/accounts"
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://accounts-db-hl.{{ .Release.Namespace }}.svc.cluster.local:5432/accounts"
     SPRING_DATASOURCE_USERNAME: root
     SPRING_DATASOURCE_PASSWORD: root
     SPRING_DATA_REDIS_HOST: "accounts-redis-master.{{ .Release.Namespace }}.svc.cluster.local"
@@ -19,12 +19,14 @@ image:
   name: accounts
   tag: latest
 
-redis:
+accounts-redis:
+  fullnameOverride: accounts-redis
   architecture: standalone
   auth:
     enabled: false
 
-postgresql:
+accounts-db:
+  fullnameOverride: accounts-db
   auth:
     database: accounts
     username: root

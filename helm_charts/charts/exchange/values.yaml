@@ -6,7 +6,7 @@ configmap:
   name: exchange
   data:
     RESOURCE_SERVER_JWT_ISSUER_URI: "http://keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master"
-    SPRING_DATASOURCE_URL: "jdbc:postgresql://exchange-postgresql-hl.{{ .Release.Namespace }}.svc.cluster.local:5432/exchange"
+    SPRING_DATASOURCE_URL: "jdbc:postgresql://exchange-db-hl.{{ .Release.Namespace }}.svc.cluster.local:5432/exchange"
     SPRING_DATASOURCE_USERNAME: root
     SPRING_DATASOURCE_PASSWORD: root
     SPRING_DATA_REDIS_HOST: "exchange-redis-master.{{ .Release.Namespace }}.svc.cluster.local"
@@ -18,12 +18,14 @@ image:
   name: exchange
   tag: latest
 
-redis:
+exchange-redis:
+  fullnameOverride: exchange-redis
   architecture: standalone
   auth:
     enabled: false
 
-postgresql:
+exchange-db:
+  fullnameOverride: exchange-db
   auth:
     database: exchange
     username: root

@@ -9,7 +9,9 @@ dependencies:
   - name: redis
     version: "22.0.7"
     repository: "oci://registry-1.docker.io/bitnamicharts"
+    alias: exchange-redis
 
   - name: postgresql
     version: "16.7.27"
     repository: "oci://registry-1.docker.io/bitnamicharts"
+    alias: exchange-db
