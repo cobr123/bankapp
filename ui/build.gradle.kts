@@ -22,7 +22,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-actuator") // автоконфигурации micrometer
+    implementation("io.micrometer:micrometer-tracing-bridge-brave")  // мост между micrometer и brave
+    implementation("io.zipkin.reporter2:zipkin-reporter-brave") // библиотека для отправки спанов в zipkin
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
     compileOnly("org.projectlombok:lombok")

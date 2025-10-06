@@ -24,6 +24,8 @@ pipeline {
                 docker build -t transfer:${IMAGE_TAG} transfer
                 docker build -t ui:${IMAGE_TAG} ui
                 docker build -t keycloak:${IMAGE_TAG} keycloak
+                docker build -t kafka:${IMAGE_TAG} kafka
+                docker build -t zipkin:${IMAGE_TAG} zipkin
                 """
             }
         }

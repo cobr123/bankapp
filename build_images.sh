@@ -13,5 +13,6 @@ docker build -t transfer:latest ./transfer
 docker build -t ui:latest ./ui
 docker build -t keycloak:latest ./keycloak
 docker build -t kafka:latest ./kafka
+docker build -t zipkin:latest ./zipkin
 
 echo "Docker images built successfully!"

@@ -1,0 +1,10 @@
+appName: zipkin
+
+port: 9411
+
+configmap:
+  name: zipkin
+
+image:
+  name: zipkin
+  tag: latest

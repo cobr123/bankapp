@@ -20,11 +20,14 @@ insecure-skip-tls-verify: true
 ```bash
 docker compose -f ./jenkins/docker-compose.yml up
 ```
-5. добавляем перенаправление внутрь кластера
+5. добавляем перенаправление внутрь кластера и открываем интерфейс приложения в браузере http://localhost:8888/
 ```bash
 kubectl --namespace test port-forward service/ui 8888:8080
 ```
-6. открываем в брауезере http://localhost:8888/
+6. добавляем перенаправление внутрь кластера и открываем интерфейс zipkin в браузере http://localhost:9411/zipkin
+```bash
+kubectl --namespace test port-forward service/zipkin 9411:9411
+```
 7. удаляем namespace test вместе с umbrella chart и отдельными модулями
 ```bash
 kubectl delete ns test
