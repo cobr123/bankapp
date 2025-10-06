@@ -10,3 +10,5 @@ spring:
     name: blocker
   jackson:
     property-naming-strategy: SNAKE_CASE
+  reactor:
+    context-propagation: AUTO

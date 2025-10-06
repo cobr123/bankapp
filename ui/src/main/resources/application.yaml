@@ -33,3 +33,5 @@ spring:
             clientAuthenticationMethod: client_secret_post # Способ передачи секрета
   jackson:
     property-naming-strategy: SNAKE_CASE
+  reactor:
+    context-propagation: AUTO
