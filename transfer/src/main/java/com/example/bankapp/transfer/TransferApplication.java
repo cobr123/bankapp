@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @SpringBootApplication
 @EnableConfigurationProperties({UserClientProperties.class, ExchangeClientProperties.class, BlockerClientProperties.class})
@@ -22,11 +21,6 @@ public class TransferApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TransferApplication.class, args);
-    }
-
-    @Bean
-    public WebClient.Builder loadBalancedWebClientBuilder() {
-        return WebClient.builder();
     }
 
     @Bean
