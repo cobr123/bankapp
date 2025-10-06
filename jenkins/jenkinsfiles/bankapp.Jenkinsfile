@@ -33,6 +33,16 @@ pipeline {
         stage('Helm Deploy to TEST') {
             steps {
                 sh """
+                helm dependency build ./helm_charts/charts/accounts
+                helm dependency build ./helm_charts/charts/blocker
+                helm dependency build ./helm_charts/charts/cash
+                helm dependency build ./helm_charts/charts/exchange
+                helm dependency build ./helm_charts/charts/exchange-generator
+                helm dependency build ./helm_charts/charts/notifications
+                helm dependency build ./helm_charts/charts/transfer
+                helm dependency build ./helm_charts/charts/ui
+                helm dependency build ./helm_charts/charts/keycloak
+                helm dependency build ./helm_charts/charts/kafka
                 helm dependency build ./helm_charts
                 """
                 sh """
