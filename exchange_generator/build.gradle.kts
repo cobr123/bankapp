@@ -26,7 +26,9 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-actuator") // автоконфигурации micrometer
+    implementation("io.micrometer:micrometer-tracing-bridge-brave")  // мост между micrometer и brave
+    implementation("io.zipkin.reporter2:zipkin-reporter-brave") // библиотека для отправки спанов в zipkin
     implementation("org.springframework.kafka:spring-kafka")
 
     testImplementation("org.springframework.kafka:spring-kafka-test")

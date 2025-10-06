@@ -4,3 +4,5 @@ metadata:
   name: {{ .Values.configmap.name }}
 data:
   spring.security.oauth2.resourceserver.jwt.issuer-uri: {{ tpl .Values.configmap.data.RESOURCE_SERVER_JWT_ISSUER_URI . | quote }}
+  management.zipkin.tracing.endpoint: {{ tpl .Values.configmap.data.ZIPKIN_TRACING_ENDPOINT . | quote }}
+  management.tracing.sampling.probability: {{ .Values.configmap.data.ZIPKIN_SAMPLING_PROBABILITY | quote }}

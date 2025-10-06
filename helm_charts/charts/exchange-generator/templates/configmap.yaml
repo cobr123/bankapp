@@ -4,3 +4,5 @@ metadata:
   name: {{ .Values.configmap.name }}
 data:
   spring.kafka.bootstrap-servers: {{ tpl .Values.configmap.data.KAFKA_BOOTSTRAP_SERVERS . | quote }}
+  management.zipkin.tracing.endpoint: {{ tpl .Values.configmap.data.ZIPKIN_TRACING_ENDPOINT . | quote }}
+  management.tracing.sampling.probability: {{ .Values.configmap.data.ZIPKIN_SAMPLING_PROBABILITY | quote }}
