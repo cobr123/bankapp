@@ -1,0 +1,59 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'ui'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'ui:8080' ]
+        labels:
+          application: 'ui'
+
+  - job_name: 'accounts'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'accounts:8080' ]
+        labels:
+          application: 'accounts'
+
+  - job_name: 'blocker'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'blocker:8080' ]
+        labels:
+          application: 'blocker'
+
+  - job_name: 'cash'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'cash:8080' ]
+        labels:
+          application: 'cash'
+
+  - job_name: 'exchange'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'exchange:8080' ]
+        labels:
+          application: 'exchange'
+
+  - job_name: 'exchange-generator'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'exchange-generator:8080' ]
+        labels:
+          application: 'exchange-generator'
+
+  - job_name: 'notifications'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'notifications:8080' ]
+        labels:
+          application: 'notifications'
+
+  - job_name: 'transfer'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ 'transfer:8080' ]
+        labels:
+          application: 'transfer'

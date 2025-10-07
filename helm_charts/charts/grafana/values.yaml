@@ -1,0 +1,10 @@
+appName: grafana
+
+port: 3000
+
+configmap:
+  name: grafana
+
+image:
+  name: grafana
+  tag: latest

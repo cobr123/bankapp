@@ -3,7 +3,7 @@ logging:
     root: WARN
 
 management:
-  endpoints.web.exposure.include: health
+  endpoints.web.exposure.include: '*'
   # Позволяет видеть детальную информацию о состоянии
   endpoint.health.show-details: always
 

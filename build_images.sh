@@ -14,5 +14,7 @@ docker build -t ui:latest ./ui
 docker build -t keycloak:latest ./keycloak
 docker build -t kafka:latest ./kafka
 docker build -t zipkin:latest ./zipkin
+docker build -t prometheus:latest ./prometheus
+docker build -t grafana:latest ./grafana
 
 echo "Docker images built successfully!"

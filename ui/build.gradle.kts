@@ -25,6 +25,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator") // автоконфигурации micrometer
     implementation("io.micrometer:micrometer-tracing-bridge-brave")  // мост между micrometer и brave
     implementation("io.zipkin.reporter2:zipkin-reporter-brave") // библиотека для отправки спанов в zipkin
+    implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
     compileOnly("org.projectlombok:lombok")

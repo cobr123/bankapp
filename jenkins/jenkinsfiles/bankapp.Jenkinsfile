@@ -26,6 +26,8 @@ pipeline {
                 docker build -t keycloak:${IMAGE_TAG} keycloak
                 docker build -t kafka:${IMAGE_TAG} kafka
                 docker build -t zipkin:${IMAGE_TAG} zipkin
+                docker build -t grafana:${IMAGE_TAG} grafana
+                docker build -t prometheus:${IMAGE_TAG} prometheus
                 """
             }
         }
@@ -43,6 +45,8 @@ pipeline {
                 helm dependency build ./helm_charts/charts/ui
                 helm dependency build ./helm_charts/charts/keycloak
                 helm dependency build ./helm_charts/charts/kafka
+                helm dependency build ./helm_charts/charts/grafana
+                helm dependency build ./helm_charts/charts/prometheus
                 helm dependency build ./helm_charts
                 """
                 sh """

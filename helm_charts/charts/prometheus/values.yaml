@@ -1,0 +1,10 @@
+appName: prometheus
+
+port: 9090
+
+configmap:
+  name: prometheus
+
+image:
+  name: prometheus
+  tag: latest

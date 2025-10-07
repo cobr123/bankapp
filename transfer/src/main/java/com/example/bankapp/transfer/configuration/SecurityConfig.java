@@ -18,7 +18,7 @@ public class SecurityConfig {
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http
                 .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/actuator/*").permitAll()
                         .anyExchange().authenticated()
                 )
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)

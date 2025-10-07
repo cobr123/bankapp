@@ -28,7 +28,15 @@ kubectl --namespace test port-forward service/ui 8888:8080
 ```bash
 kubectl --namespace test port-forward service/zipkin 9411:9411
 ```
-7. удаляем namespace test вместе с umbrella chart и отдельными модулями
+7. добавляем перенаправление внутрь кластера и открываем интерфейс prometheus в браузере http://localhost:9090
+```bash
+kubectl --namespace test port-forward service/prometheus 9090:9090
+```
+8. добавляем перенаправление внутрь кластера и открываем интерфейс grafana в браузере http://localhost:3000
+```bash
+kubectl --namespace test port-forward service/grafana 3000:3000
+```
+9. удаляем namespace test вместе с umbrella chart и отдельными модулями
 ```bash
 kubectl delete ns test
 ```
