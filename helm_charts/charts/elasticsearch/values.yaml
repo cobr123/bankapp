@@ -1,0 +1,10 @@
+appName: elasticsearch
+
+port: 9200
+
+configmap:
+  name: elasticsearch
+
+image:
+  name: elasticsearch
+  tag: latest

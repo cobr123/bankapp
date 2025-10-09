@@ -29,6 +29,7 @@ pipeline {
                 docker build -t grafana:${IMAGE_TAG} grafana
                 docker build -t prometheus:${IMAGE_TAG} prometheus
                 docker build -t logstash:${IMAGE_TAG} logstash
+                docker build -t elasticsearch:${IMAGE_TAG} elasticsearch
                 """
             }
         }
@@ -49,6 +50,7 @@ pipeline {
                 helm dependency build ./helm_charts/charts/grafana
                 helm dependency build ./helm_charts/charts/prometheus
                 helm dependency build ./helm_charts/charts/logstash
+                helm dependency build ./helm_charts/charts/elasticsearch
                 helm dependency build ./helm_charts
                 """
                 sh """
