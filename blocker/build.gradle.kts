@@ -23,6 +23,11 @@ repositories {
     mavenCentral()
 }
 
+configurations.all {
+    exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    exclude(group = "ch.qos.logback", module = "logback-classic")
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -33,6 +38,9 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.security:spring-security-oauth2-jose")
+
+    implementation("org.springframework.boot:spring-boot-starter-log4j2")
+    implementation("org.apache.kafka:kafka-clients")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

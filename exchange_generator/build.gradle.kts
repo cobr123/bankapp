@@ -23,6 +23,11 @@ repositories {
     mavenCentral()
 }
 
+configurations.all {
+    exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    exclude(group = "ch.qos.logback", module = "logback-classic")
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -33,6 +38,9 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
 
     testImplementation("org.springframework.kafka:spring-kafka-test")
+
+    implementation("org.springframework.boot:spring-boot-starter-log4j2")
+    implementation("org.apache.kafka:kafka-clients")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

@@ -23,6 +23,11 @@ repositories {
     mavenCentral()
 }
 
+configurations.all {
+    exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    exclude(group = "ch.qos.logback", module = "logback-classic")
+}
+
 dependencies {
     implementation("org.liquibase:liquibase-core:4.25.1")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -37,6 +42,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.security:spring-security-oauth2-jose")
     implementation("org.springframework.kafka:spring-kafka")
+
+    implementation("org.springframework.boot:spring-boot-starter-log4j2")
+    implementation("org.apache.kafka:kafka-clients")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
