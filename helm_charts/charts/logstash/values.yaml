@@ -1,0 +1,10 @@
+appName: logstash
+
+port: 9600
+
+configmap:
+  name: logstash
+
+image:
+  name: logstash
+  tag: latest

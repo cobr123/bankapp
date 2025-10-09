@@ -39,7 +39,7 @@ source.setTraits([
 def branchSource = new BranchSource(source)
 branchSource.setStrategy(new DefaultBranchPropertyStrategy([] as BranchProperty[]))
 
-def jobNames = ["bankapp", "keycloak", "accounts", "blocker", "cash", "exchange", "exchange_generator", "notifications", "transfer", "ui", "kafka", "zipkin", "grafana", "prometheus"]
+def jobNames = ["bankapp", "keycloak", "accounts", "blocker", "cash", "exchange", "exchange_generator", "notifications", "transfer", "ui", "kafka", "zipkin", "grafana", "prometheus", "logstash"]
 jobNames.eachWithIndex { jobName, idx ->
     // Проверка, существует ли уже такой job
     if (instance.getItem(jobName) != null) {

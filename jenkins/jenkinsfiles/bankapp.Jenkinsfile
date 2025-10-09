@@ -28,6 +28,7 @@ pipeline {
                 docker build -t zipkin:${IMAGE_TAG} zipkin
                 docker build -t grafana:${IMAGE_TAG} grafana
                 docker build -t prometheus:${IMAGE_TAG} prometheus
+                docker build -t logstash:${IMAGE_TAG} logstash
                 """
             }
         }
@@ -47,6 +48,7 @@ pipeline {
                 helm dependency build ./helm_charts/charts/kafka
                 helm dependency build ./helm_charts/charts/grafana
                 helm dependency build ./helm_charts/charts/prometheus
+                helm dependency build ./helm_charts/charts/logstash
                 helm dependency build ./helm_charts
                 """
                 sh """

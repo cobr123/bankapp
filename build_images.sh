@@ -16,5 +16,6 @@ docker build -t kafka:latest ./kafka
 docker build -t zipkin:latest ./zipkin
 docker build -t prometheus:latest ./prometheus
 docker build -t grafana:latest ./grafana
+docker build -t logstash:latest ./logstash
 
 echo "Docker images built successfully!"
