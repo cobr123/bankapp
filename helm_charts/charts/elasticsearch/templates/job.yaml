@@ -45,7 +45,7 @@ spec:
                 "template": {
                   "mappings": {
                     "properties": {
-                      "time": { "type": "date", "format": "HH:mm:ss" },
+                      "time": { "type": "date", "format": "HH:mm:ss.SSS" },
                       "log-level": { "type": "keyword" },
                       "source": { "type": "keyword" },
                       "msg": { "type": "text" }
