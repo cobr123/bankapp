@@ -1,0 +1,12 @@
+appName: kibana
+
+port: 5601
+
+configmap:
+  name: kibana
+  data:
+    ELASTICSEARCH_HOSTS: "http://elasticsearch.{{ .Release.Namespace }}.svc.cluster.local:9200"
+
+image:
+  name: kibana
+  tag: latest

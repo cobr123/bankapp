@@ -36,9 +36,9 @@ kubectl --namespace test port-forward service/prometheus 9090:9090
 ```bash
 kubectl --namespace test port-forward service/grafana 3000:3000
 ```
-9. добавляем перенаправление внутрь кластера и открываем интерфейс elasticsearch в браузере http://localhost:9200
+9. добавляем перенаправление внутрь кластера и открываем интерфейс kibana в браузере http://localhost:5601
 ```bash
-kubectl --namespace test port-forward service/elasticsearch 9200:9200
+kubectl --namespace test port-forward service/kibana 5601:5601
 ```
 10. удаляем namespace test вместе с umbrella chart и отдельными модулями
 ```bash
