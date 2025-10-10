@@ -1,0 +1,71 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-index-template
+  annotations:
+    # Выполняет хук после запуска Elasticsearch
+    "helm.sh/hook": post-install
+    # Определяет порядок выполнения хуков
+    "helm.sh/hook-weight": "5"
+    # Удаляет Job после успешного выполнения
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+        - name: create-index-template
+          image: curlimages/curl:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              # Ждём, пока Elasticsearch станет доступен
+              until curl -s http://elasticsearch:9200; do
+                echo "Waiting for Elasticsearch to start..."
+                sleep 5
+              done
+
+              # Создаём шаблон индекса
+              curl -X PUT "http://elasticsearch:9200/_component_template/bankapp_settings_template" \
+                -H 'Content-Type: application/json' \
+                -d '
+              {
+                "template": {
+                  "settings": {
+                    "index.number_of_shards": 1,
+                    "index.number_of_replicas": 1
+                  }
+                }
+              }'
+
+              # Создаём шаблон индекса
+              curl -X PUT "http://elasticsearch:9200/_component_template/bankapp_mappings_template" \
+                -H 'Content-Type: application/json' \
+                -d '
+              {
+                "template": {
+                  "mappings": {
+                    "properties": {
+                      "time": { "type": "date", "format": "HH:mm:ss" },
+                      "log-level": { "type": "keyword" },
+                      "source": { "type": "keyword" },
+                      "msg": { "type": "text" }
+                    }
+                  }
+                }
+              }'
+
+              # Создаём шаблон индекса
+              curl -X PUT "http://elasticsearch:9200/_index_template/bankapp_index_template" \
+                -H 'Content-Type: application/json' \
+                -d '
+              {
+                "index_patterns": ["bankapp-*-logs-*"],
+                "composed_of": ["bankapp_settings_template", "bankapp_mappings_template"],
+                "priority": 100,
+                "template": {
+                  "aliases": {
+                    "bankapp_data_alias": {}
+                  }
+                }
+              }'
+      restartPolicy: OnFailure
