@@ -3,6 +3,7 @@ package com.example.bankapp.exchange.consumer;
 import com.example.bankapp.exchange.model.Rate;
 import com.example.bankapp.exchange.model.UpdateRateRequestDto;
 import com.example.bankapp.exchange.service.RateService;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class RatesListener {
 
     private final RateService rateService;
+    private final MeterRegistry meterRegistry;
 
     @KafkaListener(topics = "rates")
     public void listen(UpdateRateRequestDto dto, Acknowledgment acknowledgment) {
@@ -25,5 +27,6 @@ public class RatesListener {
         rateService.update(rate);
         acknowledgment.acknowledge();
         log.info("Сообщение получено, {}", dto);
+        meterRegistry.counter("currency_update").increment();
     }
 } 
