@@ -3,6 +3,8 @@ package com.example.bankapp.blocker.controller;
 import com.example.bankapp.blocker.configuration.SecurityConfig;
 import com.example.bankapp.blocker.model.AccountChangeRequestDto;
 import com.example.bankapp.blocker.model.Currency;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.random.RandomGenerator;
 
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockUser;
 
 @WebFluxTest(BlockerController.class)
@@ -34,6 +37,9 @@ public class BlockerControllerTest {
 
     @MockitoBean
     private RandomGenerator randomGenerator;
+
+    @MockitoBean
+    private MeterRegistry meterRegistry;
 
     @AfterEach
     public void clearSecurityContext() {
@@ -83,6 +89,7 @@ public class BlockerControllerTest {
                 .login("mary")
                 .build();
         doReturn(false).when(randomGenerator).nextBoolean();
+        doReturn(mock(Counter.class)).when(meterRegistry).counter(any(), any(), any());
         webTestClient
                 .mutateWith(mockUser("john"))
                 .post()
