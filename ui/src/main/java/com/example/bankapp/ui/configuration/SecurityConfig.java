@@ -2,6 +2,8 @@ package com.example.bankapp.ui.configuration;
 
 import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.service.UserDetailsServiceImpl;
+import io.micrometer.core.instrument.MeterRegistry;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,7 +21,10 @@ import java.net.URI;
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final MeterRegistry meterRegistry;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
@@ -34,6 +39,8 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .authenticationSuccessHandler(new CustomAuthenticationSuccessHandler(meterRegistry))
+                        .authenticationFailureHandler(new CustomAuthenticationFailureHandler(meterRegistry))
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

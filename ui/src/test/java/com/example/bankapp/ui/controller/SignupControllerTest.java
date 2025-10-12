@@ -4,6 +4,7 @@ import com.example.bankapp.ui.client.UserClient;
 import com.example.bankapp.ui.configuration.SecurityConfig;
 import com.example.bankapp.ui.model.UserResponseDto;
 import com.example.bankapp.ui.service.OAuth2Service;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,8 @@ public class SignupControllerTest {
     private ReactiveClientRegistrationRepository clientRegistrationRepository;
     @MockitoBean
     private ReactiveOAuth2AuthorizedClientService authorizedClientService;
+    @MockitoBean
+    private MeterRegistry meterRegistry;
 
     @BeforeEach
     void setUp() {
