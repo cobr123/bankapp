@@ -1,0 +1,27 @@
+groups:
+  - name: bankapp-alerts # Имя группы внутри файла. Группа может содержать несколько правил
+    rules:              # Правила группы
+      - alert: LoginFailureHighRate              # Имя алерта
+        expr: rate(login_failure_total[5m]) > 10  # Условие алерта
+        for: 5m                                   # Время пребывания в условии
+        labels:                                   # Лейблы: они не влияют на правило,
+          severity: critical                      # но могут использоваться при отправке уведомления
+        annotations:                                     # Аннотации — дополнительная метаинформация алерта
+          summary: "Слишком много неудачных логинов"  # Может использоваться при отправке уведомления
+          description: "Пользователь {{ $labels.username }} совершил более 10 неудачных логинов за 5 минут"
+      - alert: BlockedOperationHighRate
+        expr: rate(blocked_operation_total[1m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Заблокирован подозрительный перевод"
+          description: "Обнаружена подозрительная операция. Пользователь: {{ $labels.username }}"
+      - alert: CurrencyUpdateLowRate
+        expr: rate(currency_update_total[5m]) == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Не обновлялся курс валют"
+          description: "Курс валют не обновлялся последние 5 минут"
