@@ -30,6 +30,7 @@ pipeline {
                 docker build -t prometheus:${IMAGE_TAG} prometheus
                 docker build -t logstash:${IMAGE_TAG} logstash
                 docker build -t elasticsearch:${IMAGE_TAG} elasticsearch
+                docker build -t kibana:${IMAGE_TAG} kibana
                 """
             }
         }
